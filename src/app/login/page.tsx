@@ -1,21 +1,54 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { Button, Typography, Layout, theme, ConfigProvider } from "antd";
+import { SpotifyOutlined } from "@ant-design/icons";
+import { spotifyTheme } from "../theme";
+
+const { Title } = Typography;
+const { Content } = Layout;
+const { useToken } = theme;
 
 export default function LoginPage() {
+  const { token } = useToken();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-white mb-8">
-          Welcome to Spotify Cover App
-        </h1>
-        <button
-          onClick={() => signIn("spotify", { callbackUrl: "/" })}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-colors"
+    <ConfigProvider theme={spotifyTheme}>
+      <Layout
+        style={{
+          minHeight: "100vh",
+          background: token.colorBgBase,
+        }}
+      >
+        <Content
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          Login with Spotify
-        </button>
-      </div>
-    </div>
+          <div style={{ textAlign: "center" }}>
+            <Title
+              level={1}
+              style={{
+                color: token.colorTextBase,
+                marginBottom: token.marginLG,
+                fontSize: "48px",
+              }}
+            >
+              Welcome to Spotify Cover App
+            </Title>
+            <Button
+              type="primary"
+              size="large"
+              icon={<SpotifyOutlined />}
+              onClick={() => signIn("spotify", { callbackUrl: "/" })}
+            >
+              Login with Spotify
+            </Button>
+          </div>
+        </Content>
+      </Layout>
+    </ConfigProvider>
   );
 }
