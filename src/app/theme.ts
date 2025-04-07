@@ -3,12 +3,17 @@ import { ThemeConfig } from "antd";
 export const spotifyTheme: ThemeConfig = {
   token: {
     colorPrimary: "#1DB954",
-    colorBgBase: "#121212",
+    colorBgBase: "#000000",
     colorTextBase: "#FFFFFF",
     colorTextSecondary: "#B3B3B3",
     borderRadius: 20,
     fontFamily:
       "Circular, -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+    colorPrimaryBg: "rgba(29, 185, 84, 0.1)",
+    colorPrimaryBgHover: "rgba(29, 185, 84, 0.2)",
+    colorPrimaryBorder: "rgba(29, 185, 84, 0.3)",
+    colorPrimaryHover: "#1ed760",
+    colorPrimaryActive: "#1aa34a",
   },
   components: {
     Button: {
@@ -20,14 +25,15 @@ export const spotifyTheme: ThemeConfig = {
       paddingContentVertical: 12,
       fontSize: 16,
       fontWeight: 700,
+      boxShadow: "0 0 20px rgba(29, 185, 84, 0.3)",
     },
     Typography: {
       colorTextHeading: "#FFFFFF",
       fontWeightStrong: 700,
     },
     Layout: {
-      headerBg: "#121212",
-      bodyBg: "#121212",
+      colorBgHeader: "#000000",
+      colorBgBody: "#000000",
     },
   },
 };
