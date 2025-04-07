@@ -1,6 +1,12 @@
 import styled from "@emotion/styled";
-import { Layout, Typography } from "antd";
+import { Layout, Typography, theme } from "antd";
 import { keyframes } from "@emotion/react";
+
+declare module "@emotion/react" {
+  export interface Theme {
+    token: typeof theme.useToken extends () => { token: infer T } ? T : never;
+  }
+}
 
 const { Content } = Layout;
 
