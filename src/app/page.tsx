@@ -10,6 +10,7 @@ import {
   StyledTitle,
   StyledSubtitle,
 } from "./styles";
+import PlaylistList from "./components/PlaylistList";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -38,6 +39,7 @@ export default function HomePage() {
               Create stunning, unique cover art for your Spotify playlists with
               AI
             </StyledSubtitle>
+            <PlaylistList />
           </>
         ) : (
           <Space direction="vertical" size="large" align="center">
