@@ -1,12 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { List, Image, Typography, Card } from "antd";
+import { List, Image, Typography, theme } from "antd";
 import { Playlist } from "@/types/spotify";
+import styled from "@emotion/styled";
 
 const { Title, Text } = Typography;
+const { useToken } = theme;
+
+const PlaylistContainer = styled.div`
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+`;
+
+const PlaylistItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+`;
+
+const PlaylistInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export default function PlaylistList() {
+  const { token } = useToken();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,35 +52,32 @@ export default function PlaylistList() {
   }, []);
 
   return (
-    <Card>
-      <Title level={2}>Your Playlists</Title>
+    <PlaylistContainer>
+      <Title level={2} style={{ color: token.colorTextBase }}>
+        Your Playlists
+      </Title>
       <List
         loading={loading}
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
         dataSource={playlists}
         renderItem={(playlist) => (
           <List.Item>
-            <Card
-              hoverable
-              cover={
-                <Image
-                  alt={playlist.name}
-                  src={playlist.images[0]?.url}
-                  preview={false}
-                  style={{ height: 200, objectFit: "cover" }}
-                />
-              }
-            >
-              <Card.Meta
-                title={playlist.name}
-                description={
-                  <Text type="secondary">{playlist.tracks.total} tracks</Text>
-                }
+            <PlaylistItem>
+              <Image
+                alt={playlist.name}
+                src={playlist.images[0]?.url}
+                preview={false}
+                width={64}
+                height={64}
+                style={{ objectFit: "cover" }}
               />
-            </Card>
+              <PlaylistInfo>
+                <Text strong>{playlist.name}</Text>
+                <Text type="secondary">{playlist.tracks.total} tracks</Text>
+              </PlaylistInfo>
+            </PlaylistItem>
           </List.Item>
         )}
       />
-    </Card>
+    </PlaylistContainer>
   );
 }

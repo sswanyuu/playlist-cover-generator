@@ -1,11 +1,10 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
-import { Button, Space, Spin } from "antd";
+import { Button, Space, Spin, Layout } from "antd";
 import { SpotifyOutlined } from "@ant-design/icons";
 import {
   StyledLayout,
-  BackgroundGradient,
   StyledContent,
   StyledTitle,
   StyledSubtitle,
@@ -17,25 +16,23 @@ export default function HomePage() {
 
   if (status === "loading") {
     return (
-      <StyledLayout>
-        <BackgroundGradient />
+      <Layout>
         <StyledContent>
           <Spin size="large" />
         </StyledContent>
-      </StyledLayout>
+      </Layout>
     );
   }
 
   return (
     <StyledLayout>
-      <BackgroundGradient />
       <StyledContent>
         {session ? (
           <>
             <StyledTitle level={1}>
               AI-Powered Spotify Playlist Cover Generator
             </StyledTitle>
-            <StyledSubtitle>
+            <StyledSubtitle type="secondary">
               Create stunning, unique cover art for your Spotify playlists with
               AI
             </StyledSubtitle>

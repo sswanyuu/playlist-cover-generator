@@ -1,10 +1,15 @@
 import styled from "@emotion/styled";
-import { Layout, Typography, theme } from "antd";
+import { Layout, Typography } from "antd";
 import { keyframes } from "@emotion/react";
 
 declare module "@emotion/react" {
   export interface Theme {
-    token: typeof theme.useToken extends () => { token: infer T } ? T : never;
+    token: {
+      colorTextSecondary: string;
+      fontSizeLG: number;
+      margin: number;
+      colorTextBase: string;
+    };
   }
 }
 
@@ -21,23 +26,8 @@ const glow = keyframes`
 
 export const StyledLayout = styled(Layout)`
   min-height: 100vh;
-  background: ${({ theme }) => theme.token.colorBgBase};
   position: relative;
   overflow: hidden;
-`;
-
-export const BackgroundGradient = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(29, 185, 84, 0.1) 0%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  z-index: 1;
 `;
 
 export const StyledContent = styled(Content)`
@@ -60,7 +50,7 @@ export const StyledTitle = styled(Typography.Title)`
   background: linear-gradient(45deg, #1db954, #1ed760, #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${glow} 1.5s ease-in-out infinite alternate;
+  animation: ${glow} 1.2s ease-in-out infinite alternate;
   text-align: center;
   max-width: 800px;
   line-height: 1.2;
@@ -68,7 +58,6 @@ export const StyledTitle = styled(Typography.Title)`
 `;
 
 export const StyledSubtitle = styled(Typography.Text)`
-  color: ${({ theme }) => theme.token.colorTextSecondary};
   font-size: ${({ theme }) => theme.token.fontSizeLG}px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
