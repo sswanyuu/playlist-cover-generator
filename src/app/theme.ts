@@ -32,8 +32,8 @@ export const spotifyTheme: ThemeConfig = {
       fontWeightStrong: 700,
     },
     Layout: {
-      colorBgHeader: "#000000",
-      colorBgBody: "#000000",
+      headerBg: "#000000",
+      bodyBg: "#000000",
     },
   },
 };
