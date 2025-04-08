@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Typography, List, theme, Image, Button } from "antd";
+import { Typography, List, theme, Image, Button, message } from "antd";
 import styled from "@emotion/styled";
-import { ArrowRightOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -72,6 +72,8 @@ export default function PlaylistPage() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +106,38 @@ export default function PlaylistPage() {
     fetchData();
   }, [id]);
 
+  const handleGenerateImage = async () => {
+    if (!playlist?.name || !tracks) return;
+
+    setGenerating(true);
+    try {
+      const trackNames = tracks.map((track) => `"${track.name}"`).join(", ");
+      const response = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          playlistName: playlist.name,
+          trackNames: trackNames,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+
+      const data = await response.json();
+      setGeneratedImage(data.imageUrl);
+      message.success("Image generated successfully!");
+    } catch (error) {
+      console.error("Error generating image:", error);
+      message.error("Failed to generate image");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <PlaylistContainer>
       <PreviewSection>
@@ -116,11 +150,29 @@ export default function PlaylistPage() {
         />
         <ArrowContainer>
           <ArrowRightOutlined style={{ fontSize: 24 }} />
-          <GenerateButton type="primary" size="large">
+          <GenerateButton
+            type="primary"
+            size="large"
+            onClick={handleGenerateImage}
+            loading={generating}
+            icon={generating ? <LoadingOutlined /> : null}
+          >
             Generate Cover Image
           </GenerateButton>
         </ArrowContainer>
-        <PreviewBox>AI Generated Cover</PreviewBox>
+        <PreviewBox>
+          {generatedImage ? (
+            <Image
+              src={generatedImage}
+              alt="Generated Cover"
+              width={300}
+              height={300}
+              style={{ objectFit: "cover", borderRadius: token.borderRadius }}
+            />
+          ) : (
+            "AI Generated Cover"
+          )}
+        </PreviewBox>
       </PreviewSection>
 
       <Title level={2} style={{ color: token.colorTextBase }}>

@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -13,8 +13,9 @@ export async function GET(
   }
 
   try {
+    const { id } = await params;
     const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${params.id}/tracks`,
+      `https://api.spotify.com/v1/playlists/${id}/tracks`,
       {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
