@@ -20,6 +20,10 @@ const PlaylistItem = styled.div`
   align-items: center;
   gap: 16px;
   width: 100%;
+  &:hover {
+    background-color: ${({ theme }) => theme.token.colorBgContainer};
+    cursor: pointer;
+  }
 `;
 
 const PlaylistInfo = styled.div`
@@ -61,7 +65,7 @@ export default function PlaylistList() {
         dataSource={playlists}
         renderItem={(playlist) => (
           <List.Item>
-            <PlaylistItem>
+            <PlaylistItem onClick={() => console.log(playlist.name)}>
               <Image
                 alt={playlist.name}
                 src={playlist.images[0]?.url}

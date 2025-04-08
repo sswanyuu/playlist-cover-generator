@@ -4,12 +4,11 @@ import { keyframes } from "@emotion/react";
 
 declare module "@emotion/react" {
   export interface Theme {
-    token: {
-      colorTextSecondary: string;
-      fontSizeLG: number;
-      margin: number;
-      colorTextBase: string;
-    };
+    token: Partial<
+      typeof import("antd").theme.useToken extends () => { token: infer T }
+        ? T
+        : never
+    >;
   }
 }
 

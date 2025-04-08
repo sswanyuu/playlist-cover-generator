@@ -1,19 +1,20 @@
 "use client";
 
-import { ConfigProvider, theme } from "antd";
-import { ThemeProvider } from "@emotion/react";
+import { ConfigProvider } from "antd";
+import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
 import { SessionProvider } from "next-auth/react";
 import { spotifyTheme } from "./theme";
 
-const { useToken } = theme;
-
 export function Providers({ children }: { children: React.ReactNode }) {
-  const { token } = useToken();
-
+  const emotionTheme = {
+    token: spotifyTheme.token, // sync AntD token to Emotion
+  };
   return (
     <SessionProvider>
       <ConfigProvider theme={spotifyTheme}>
-        <ThemeProvider theme={{ token }}>{children}</ThemeProvider>
+        <EmotionThemeProvider theme={emotionTheme}>
+          {children}
+        </EmotionThemeProvider>
       </ConfigProvider>
     </SessionProvider>
   );
