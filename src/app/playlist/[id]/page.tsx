@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Typography, List, theme, Image } from "antd";
+import { Typography, List, theme, Image, Button } from "antd";
 import styled from "@emotion/styled";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
@@ -25,10 +25,20 @@ const PreviewSection = styled.div`
 
 const ArrowContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
   color: ${({ theme }) => theme.token.colorTextBase};
-  font-size: 24px;
+`;
+
+const GenerateButton = styled(Button)`
+  background-color: ${({ theme }) => theme.token.colorPrimary};
+  border: none;
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.token.colorPrimaryHover} !important;
+  }
 `;
 
 const PreviewBox = styled.div`
@@ -105,7 +115,10 @@ export default function PlaylistPage() {
           style={{ objectFit: "cover", borderRadius: token.borderRadius }}
         />
         <ArrowContainer>
-          <ArrowRightOutlined />
+          <ArrowRightOutlined style={{ fontSize: 24 }} />
+          <GenerateButton type="primary" size="large">
+            Generate Cover Image
+          </GenerateButton>
         </ArrowContainer>
         <PreviewBox>AI Generated Cover</PreviewBox>
       </PreviewSection>
