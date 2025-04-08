@@ -103,6 +103,7 @@ export default function PlaylistPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -177,9 +178,10 @@ export default function PlaylistPage() {
     }
   };
 
-  const handleSetCover = async () => {
+  const handleUpdateCover = async () => {
     if (!generatedImage) return;
 
+    setUpdating(true);
     try {
       const response = await fetch(`/api/spotify/playlists/${id}/cover`, {
         method: "PUT",
@@ -197,6 +199,8 @@ export default function PlaylistPage() {
     } catch (error) {
       console.error("Error updating playlist cover:", error);
       message.error("Failed to update playlist cover");
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -218,9 +222,10 @@ export default function PlaylistPage() {
             type="primary"
             size="large"
             disabled={!generatedImage}
-            onClick={handleSetCover}
+            onClick={handleUpdateCover}
+            loading={updating}
           >
-            Use this image as my playlist cover
+            Set as Cover
           </SetCoverButton>
           <ArrowLeftOutlined style={{ fontSize: 24 }} />
           <ArrowRightOutlined style={{ fontSize: 24 }} />
