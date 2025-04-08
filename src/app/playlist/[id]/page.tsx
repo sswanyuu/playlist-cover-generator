@@ -140,7 +140,17 @@ export default function PlaylistPage() {
 
     setGenerating(true);
     try {
-      const trackNames = tracks.map((track) => `"${track.name}"`).join(", ");
+      const trackNames = tracks
+        .map((track) => {
+          const name = track.name;
+          // truncate artist name to avoid api error
+          const featIndex = name.toLowerCase().indexOf("feat.");
+          return featIndex !== -1
+            ? `"${name.substring(0, featIndex).trim()}"`
+            : `"${name}"`;
+        })
+        .join(", ");
+
       const response = await fetch("/api/generate-image", {
         method: "POST",
         headers: {
