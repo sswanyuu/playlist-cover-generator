@@ -37,12 +37,13 @@ const ArrowContainer = styled.div`
   color: ${({ theme }) => theme.token.colorTextBase};
 `;
 
-const GenerateButton = styled(Button)`
-  background-color: ${({ theme }) => theme.token.colorPrimary};
+const BackButton = styled(Button)`
+  margin-bottom: 24px;
+  background-color: ${({ theme }) => theme.token.colorBgContainer};
   border: none;
   &:hover {
-    background-color: ${({ theme }) =>
-      theme.token.colorPrimaryHover} !important;
+    background-color: ${({ theme }) => theme.token.colorBgContainer} !important;
+    opacity: 0.8;
   }
 `;
 
@@ -52,6 +53,19 @@ const SetCoverButton = styled(Button)`
   margin-bottom: 8px;
   &:hover {
     background-color: ${purpleButtonColors.colorPurpleHover} !important;
+  }
+  &:active {
+    background-color: ${purpleButtonColors.colorPurpleActive} !important;
+    transform: scale(0.98);
+  }
+`;
+
+const GenerateButton = styled(Button)`
+  background-color: ${({ theme }) => theme.token.colorPrimary};
+  border: none;
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.token.colorPrimaryHover} !important;
   }
 `;
 
@@ -64,16 +78,6 @@ const PreviewBox = styled.div`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.token.colorTextSecondary};
-`;
-
-const BackButton = styled(Button)`
-  margin-bottom: 24px;
-  background-color: ${({ theme }) => theme.token.colorBgContainer};
-  border: none;
-  &:hover {
-    background-color: ${({ theme }) => theme.token.colorBgContainer} !important;
-    opacity: 0.8;
-  }
 `;
 
 interface Track {
