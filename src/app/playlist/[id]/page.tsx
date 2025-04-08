@@ -52,6 +52,10 @@ interface Playlist {
   name: string;
 }
 
+interface SpotifyTrackItem {
+  track: Track;
+}
+
 export default function PlaylistPage() {
   const { id } = useParams();
   const { token } = useToken();
@@ -74,7 +78,11 @@ export default function PlaylistPage() {
         const tracksData = await tracksResponse.json();
         const playlistData = await playlistResponse.json();
 
-        setTracks(tracksData.items.slice(0, 15).map((item: any) => item.track));
+        setTracks(
+          tracksData.items
+            .slice(0, 15)
+            .map((item: SpotifyTrackItem) => item.track)
+        );
         setPlaylist(playlistData);
       } catch (error) {
         console.error("Error fetching data:", error);
