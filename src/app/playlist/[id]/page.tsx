@@ -167,6 +167,29 @@ export default function PlaylistPage() {
     }
   };
 
+  const handleSetCover = async () => {
+    if (!generatedImage) return;
+
+    try {
+      const response = await fetch(`/api/spotify/playlists/${id}/cover`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: generatedImage }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update playlist cover");
+      }
+
+      message.success("Playlist cover updated successfully!");
+    } catch (error) {
+      console.error("Error updating playlist cover:", error);
+      message.error("Failed to update playlist cover");
+    }
+  };
+
   return (
     <PlaylistContainer>
       <BackButton icon={<ArrowLeftOutlined />} onClick={() => router.push("/")}>
@@ -181,19 +204,16 @@ export default function PlaylistPage() {
           style={{ objectFit: "cover", borderRadius: token.borderRadius }}
         />
         <ArrowContainer>
-          <ArrowLeftOutlined style={{ fontSize: 24 }} />
           <SetCoverButton
             type="primary"
             size="large"
             disabled={!generatedImage}
-            onClick={() => {
-              // TODO: Implement setting the playlist cover
-              message.success("Playlist cover updated successfully!");
-            }}
+            onClick={handleSetCover}
           >
-            Update my playlist cover
+            Use this image as my playlist cover
           </SetCoverButton>
-
+          <ArrowLeftOutlined style={{ fontSize: 24 }} />
+          <ArrowRightOutlined style={{ fontSize: 24 }} />
           <GenerateButton
             type="primary"
             size="large"
@@ -203,7 +223,6 @@ export default function PlaylistPage() {
           >
             Generate Cover Image
           </GenerateButton>
-          <ArrowRightOutlined style={{ fontSize: 24 }} />
         </ArrowContainer>
         <PreviewBox>
           {generatedImage ? (

@@ -14,7 +14,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "playlist-read-private playlist-read-collaborative",
+          scope:
+            "playlist-read-private playlist-read-collaborative ugc-image-upload playlist-modify-public playlist-modify-private",
         },
       },
     }),
