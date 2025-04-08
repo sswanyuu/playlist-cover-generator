@@ -10,7 +10,7 @@ const handler = NextAuth({
         url: "https://accounts.spotify.com/authorize",
         params: {
           scope:
-            "user-read-email user-read-private user-library-read playlist-read-private playlist-read-collaborative user-read-currently-playing user-read-playback-state user-modify-playback-state",
+            "playlist-read-private playlist-read-collaborative ugc-image-upload playlist-modify-public playlist-modify-private",
         },
       },
     }),

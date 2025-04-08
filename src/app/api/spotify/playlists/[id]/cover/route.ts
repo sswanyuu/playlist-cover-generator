@@ -7,8 +7,6 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  console.log("🚀🚀🚀 ~~~ ~ route.ts:10 ~ session:", session);
-
   if (!session?.accessToken) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -34,7 +32,6 @@ export async function PUT(
         body: base64Image,
       }
     );
-    console.log("🚀🚀🚀 ~~~ ~ route.ts:36 ~ response:", response);
 
     if (!response.ok) {
       throw new Error("Failed to update playlist cover");

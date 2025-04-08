@@ -1,14 +1,11 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
 const scopes = [
-  "user-read-email",
-  "user-read-private",
-  "user-library-read",
   "playlist-read-private",
   "playlist-read-collaborative",
-  "user-read-currently-playing",
-  "user-read-playback-state",
-  "user-modify-playback-state",
+  "ugc-image-upload",
+  "playlist-modify-public",
+  "playlist-modify-private",
 ].join(",");
 
 const params = {
