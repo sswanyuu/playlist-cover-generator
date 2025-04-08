@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { List, Image, Typography, theme } from "antd";
 import { Playlist } from "@/types/spotify";
 import styled from "@emotion/styled";
+import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -33,6 +34,7 @@ const PlaylistInfo = styled.div`
 
 export default function PlaylistList() {
   const { token } = useToken();
+  const router = useRouter();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,6 +57,10 @@ export default function PlaylistList() {
     fetchPlaylists();
   }, []);
 
+  const handlePlaylistClick = (id: string) => {
+    router.push(`/playlist/${id}`);
+  };
+
   return (
     <PlaylistContainer>
       <Title level={2} style={{ color: token.colorTextBase }}>
@@ -65,7 +71,7 @@ export default function PlaylistList() {
         dataSource={playlists}
         renderItem={(playlist) => (
           <List.Item>
-            <PlaylistItem onClick={() => console.log(playlist.name)}>
+            <PlaylistItem onClick={() => handlePlaylistClick(playlist.id)}>
               <Image
                 alt={playlist.name}
                 src={playlist.images[0]?.url}
