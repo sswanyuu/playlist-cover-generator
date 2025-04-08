@@ -60,3 +60,9 @@ export const spotifyTheme: ThemeConfig = {
     },
   },
 };
+
+// Custom colors for the purple button
+export const purpleButtonColors = {
+  colorPurple: "#722ed1",
+  colorPurpleHover: "#531dab",
+};

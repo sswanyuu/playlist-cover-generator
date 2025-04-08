@@ -9,6 +9,7 @@ import {
   LoadingOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
+import { purpleButtonColors } from "@/app/theme";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -42,6 +43,15 @@ const GenerateButton = styled(Button)`
   &:hover {
     background-color: ${({ theme }) =>
       theme.token.colorPrimaryHover} !important;
+  }
+`;
+
+const SetCoverButton = styled(Button)`
+  background-color: ${purpleButtonColors.colorPurple};
+  border: none;
+  margin-bottom: 8px;
+  &:hover {
+    background-color: ${purpleButtonColors.colorPurpleHover} !important;
   }
 `;
 
@@ -167,7 +177,19 @@ export default function PlaylistPage() {
           style={{ objectFit: "cover", borderRadius: token.borderRadius }}
         />
         <ArrowContainer>
-          <ArrowRightOutlined style={{ fontSize: 24 }} />
+          <ArrowLeftOutlined style={{ fontSize: 24 }} />
+          <SetCoverButton
+            type="primary"
+            size="large"
+            disabled={!generatedImage}
+            onClick={() => {
+              // TODO: Implement setting the playlist cover
+              message.success("Playlist cover updated successfully!");
+            }}
+          >
+            Update my playlist cover
+          </SetCoverButton>
+
           <GenerateButton
             type="primary"
             size="large"
@@ -177,6 +199,7 @@ export default function PlaylistPage() {
           >
             Generate Cover Image
           </GenerateButton>
+          <ArrowRightOutlined style={{ fontSize: 24 }} />
         </ArrowContainer>
         <PreviewBox>
           {generatedImage ? (

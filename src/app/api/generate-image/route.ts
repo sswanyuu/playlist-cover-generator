@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
 const LEONARDO_API_URL = "https://cloud.leonardo.ai/api/rest/v1/generations";
 
+// For testing purposes
 export async function POST(request: Request) {
+  return NextResponse.json({ imageUrl: "https://picsum.photos/500" });
+}
+export async function POST2(request: Request) {
   if (!LEONARDO_API_KEY) {
     return NextResponse.json(
       { error: "Leonardo API key not configured" },
