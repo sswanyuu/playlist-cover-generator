@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Typography, List, theme, Image, Button, message } from "antd";
 import styled from "@emotion/styled";
-import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  LoadingOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -52,6 +56,16 @@ const PreviewBox = styled.div`
   color: ${({ theme }) => theme.token.colorTextSecondary};
 `;
 
+const BackButton = styled(Button)`
+  margin-bottom: 24px;
+  background-color: ${({ theme }) => theme.token.colorBgContainer};
+  border: none;
+  &:hover {
+    background-color: ${({ theme }) => theme.token.colorBgContainer} !important;
+    opacity: 0.8;
+  }
+`;
+
 interface Track {
   name: string;
   artists: Array<{ name: string }>;
@@ -68,6 +82,7 @@ interface SpotifyTrackItem {
 
 export default function PlaylistPage() {
   const { id } = useParams();
+  const router = useRouter();
   const { token } = useToken();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
@@ -140,6 +155,9 @@ export default function PlaylistPage() {
 
   return (
     <PlaylistContainer>
+      <BackButton icon={<ArrowLeftOutlined />} onClick={() => router.push("/")}>
+        Back to Home
+      </BackButton>
       <PreviewSection>
         <Image
           src={playlist?.images[0]?.url}
