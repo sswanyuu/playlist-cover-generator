@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App as AntdApp } from "antd";
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
 import { SessionProvider } from "next-auth/react";
 import { spotifyTheme } from "./theme";
@@ -12,9 +12,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <ConfigProvider theme={spotifyTheme}>
-        <EmotionThemeProvider theme={emotionTheme}>
-          {children}
-        </EmotionThemeProvider>
+        <AntdApp>
+          <EmotionThemeProvider theme={emotionTheme}>
+            {children}
+          </EmotionThemeProvider>
+        </AntdApp>
       </ConfigProvider>
     </SessionProvider>
   );

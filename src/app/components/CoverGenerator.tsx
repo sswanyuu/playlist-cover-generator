@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button, Image, Typography, message, theme } from "antd";
 import styled from "@emotion/styled";
@@ -7,6 +9,7 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
+import { keyframes } from "@emotion/react";
 
 const { Title } = Typography;
 const { useToken } = theme;
@@ -19,6 +22,7 @@ const PreviewSection = styled.div`
   padding: 24px;
   background-color: ${({ theme }) => theme.token.colorBgContainer};
   border-radius: ${({ theme }) => theme.token.borderRadius}px;
+  position: relative;
 `;
 
 const ArrowContainer = styled.div`
@@ -28,6 +32,7 @@ const ArrowContainer = styled.div`
   justify-content: center;
   gap: 16px;
   color: ${({ theme }) => theme.token.colorTextBase};
+  z-index: 1;
 `;
 
 const SetCoverButton = styled(Button)`
@@ -61,6 +66,31 @@ const PreviewBox = styled.div`
   align-items: center;
   justify-content: center;
   color: ${({ theme }) => theme.token.colorTextSecondary};
+  position: relative;
+  overflow: hidden;
+`;
+
+const slideAnimation = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+
+const OriginalImage = styled(Image)<{ isAnimating: boolean }>`
+  animation: ${({ isAnimating }) => (isAnimating ? slideAnimation : "none")} 1s
+    ease-in-out;
+`;
+
+const GeneratedImage = styled(Image)<{ isAnimating: boolean }>`
+  transition: transform 0.5s ease-in-out;
+  transform: ${({ isAnimating }) =>
+    isAnimating ? "translateX(-100%)" : "translateX(0)"};
 `;
 
 interface CoverGeneratorProps {
@@ -83,6 +113,7 @@ export default function CoverGenerator({
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleGenerateImage = async () => {
     if (!playlist?.name || !tracks) return;
@@ -131,7 +162,17 @@ export default function CoverGenerator({
     setUpdating(true);
     try {
       await onCoverUpdate(generatedImage);
+      setIsAnimating(true);
       message.success("Playlist cover updated successfully!");
+      console.log(
+        `🚀🚀🚀 ~~~ ~ CoverGenerator.tsx:177 ~ handleUpdateCover ~ "Playlist cover updated successfully!":`,
+        "Playlist cover updated successfully!"
+      );
+      // Reset animation after it completes
+      setTimeout(() => {
+        setIsAnimating(false);
+        setGeneratedImage(null);
+      }, 1000);
     } catch (error) {
       console.error("Error updating playlist cover:", error);
       message.error("Failed to update playlist cover");
@@ -146,13 +187,16 @@ export default function CoverGenerator({
         {playlist?.name}
       </Title>
       <PreviewSection>
-        <Image
-          src={playlist?.images[0]?.url}
-          alt="Playlist Cover"
-          width={300}
-          height={300}
-          style={{ objectFit: "cover", borderRadius: token.borderRadius }}
-        />
+        <PreviewBox>
+          <OriginalImage
+            src={playlist?.images[0]?.url}
+            alt="Playlist Cover"
+            width={300}
+            height={300}
+            style={{ objectFit: "cover", borderRadius: token.borderRadius }}
+            isAnimating={isAnimating}
+          />
+        </PreviewBox>
         <ArrowContainer>
           <SetCoverButton
             type="primary"
@@ -177,12 +221,13 @@ export default function CoverGenerator({
         </ArrowContainer>
         <PreviewBox>
           {generatedImage ? (
-            <Image
+            <GeneratedImage
               src={generatedImage}
               alt="Generated Cover"
               width={300}
               height={300}
               style={{ objectFit: "cover", borderRadius: token.borderRadius }}
+              isAnimating={isAnimating}
             />
           ) : (
             "AI Generated Cover"
