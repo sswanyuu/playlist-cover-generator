@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
           where: { id: user.id },
           update: {},
           create: {
+            id: user.id,
             credits: 5,
           },
         });
