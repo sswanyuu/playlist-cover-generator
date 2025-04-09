@@ -147,12 +147,11 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://postgres.kmapbnkjoqkpxesqtdkf:spotify_database_password@aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true"
       }
     }
   },
