@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
+import { prisma } from "./prisma";
 
 declare module "next-auth" {
   interface Session {
@@ -13,6 +14,7 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.SPOTIFY_CLIENT_ID!,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
       authorization: {
+        url: "https://accounts.spotify.com/authorize",
         params: {
           scope:
             "playlist-read-private playlist-read-collaborative ugc-image-upload playlist-modify-public playlist-modify-private",
@@ -21,6 +23,22 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user }) {
+      if (!user) return false;
+
+      // Create the user if not exists
+      const res = await prisma.user.upsert({
+        where: { id: user.id },
+        update: {},
+        create: {
+          email: user.email,
+          credits: 5,
+        },
+      });
+      console.log("🚀🚀🚀 ~~~ ~ auth.ts:38 ~ signIn ~ res:", res);
+
+      return true;
+    },
     async jwt({ token, account, user }) {
       if (account && user) {
         return {
@@ -73,5 +91,8 @@ export const authOptions: NextAuthOptions = {
       session.accessToken = token.accessToken as string;
       return session;
     },
+  },
+  pages: {
+    signIn: "/login",
   },
 };

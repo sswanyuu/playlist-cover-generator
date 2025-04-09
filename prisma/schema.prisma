@@ -18,5 +18,5 @@ datasource db {
 model User {
   id      String   @id @default(uuid())
   credits Int      @default(10)
-  email   String   @unique
+  email   String?   @unique
 }

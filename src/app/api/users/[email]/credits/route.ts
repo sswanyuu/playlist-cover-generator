@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { email: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { credits } = await request.json();
@@ -17,7 +17,7 @@ export async function PUT(
 
     const user = await prisma.user.update({
       where: {
-        email: params.email,
+        id: params.id,
       },
       data: {
         credits,
