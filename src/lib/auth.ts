@@ -24,18 +24,20 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      console.log("🚀🚀🚀 ~~~ ~ auth.ts:27 ~ signIn ~ user:", user);
       // Create the user if not exists
-      const res = await prisma.user.upsert({
-        where: { id: user.id },
-        update: {},
-        create: {
-          credits: 5,
-        },
-      });
-      console.log("🚀🚀🚀 ~~~ ~ auth.ts:37 ~ signIn ~ res:", res);
-
-      return true;
+      try {
+        await prisma.user.upsert({
+          where: { id: user.id },
+          update: {},
+          create: {
+            credits: 5,
+          },
+        });
+        return true;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_) {
+        return false;
+      }
     },
     async jwt({ token, account, user }) {
       if (account && user) {

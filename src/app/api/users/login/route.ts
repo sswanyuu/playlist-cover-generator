@@ -3,22 +3,22 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const { id } = await request.json();
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: "Id is required" }, { status: 400 });
     }
 
     // Check if user exists
     let user = await prisma.user.findUnique({
-      where: { email },
+      where: { id },
     });
 
     // If user doesn't exist, create a new one with default credits
     if (!user) {
       user = await prisma.user.create({
         data: {
-          email,
+          id,
           credits: 5, // Default credit value
         },
       });
