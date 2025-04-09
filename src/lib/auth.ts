@@ -24,18 +24,16 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
-      if (!user) return false;
-
+      console.log("🚀🚀🚀 ~~~ ~ auth.ts:27 ~ signIn ~ user:", user);
       // Create the user if not exists
       const res = await prisma.user.upsert({
         where: { id: user.id },
         update: {},
         create: {
-          email: user.email,
           credits: 5,
         },
       });
-      console.log("🚀🚀🚀 ~~~ ~ auth.ts:38 ~ signIn ~ res:", res);
+      console.log("🚀🚀🚀 ~~~ ~ auth.ts:37 ~ signIn ~ res:", res);
 
       return true;
     },
