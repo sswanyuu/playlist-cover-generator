@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.accessToken) {
@@ -20,7 +20,7 @@ export async function PUT(
     const base64Image = Buffer.from(imageBuffer).toString("base64");
 
     // Then, upload it to Spotify
-    const { id } = await params;
+    const { id } = await context.params;
     const response = await fetch(
       `https://api.spotify.com/v1/playlists/${id}/images`,
       {
