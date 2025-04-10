@@ -1,25 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "antd";
+import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import TrackList from "@/app/components/TrackList";
 import CoverGenerator from "@/app/components/CoverGenerator";
 
 const PlaylistContainer = styled.div`
   padding: 24px;
-`;
-
-const BackButton = styled(Button)`
-  margin-bottom: 24px;
-  background-color: ${({ theme }) => theme.token.colorBgContainer};
-  border: none;
-  &:hover {
-    background-color: ${({ theme }) => theme.token.colorBgContainer} !important;
-    opacity: 0.8;
-  }
 `;
 
 interface Track {
@@ -38,7 +26,6 @@ interface SpotifyTrackItem {
 
 export default function PlaylistPage() {
   const { id } = useParams();
-  const router = useRouter();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,9 +81,6 @@ export default function PlaylistPage() {
 
   return (
     <PlaylistContainer>
-      <BackButton icon={<ArrowLeftOutlined />} onClick={() => router.push("/")}>
-        Back to Home
-      </BackButton>
       <CoverGenerator
         playlist={playlist}
         tracks={tracks}
