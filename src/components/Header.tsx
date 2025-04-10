@@ -69,6 +69,7 @@ export function Header() {
     <HeaderContainer>
       {pathname !== "/" && (
         <BackButton
+          size="small"
           icon={<ArrowLeftOutlined />}
           onClick={() => router.push("/")}
         >
