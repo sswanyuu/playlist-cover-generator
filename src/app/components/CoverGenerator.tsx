@@ -189,7 +189,7 @@ export default function CoverGenerator({
       <PreviewSection>
         <PreviewBox>
           <OriginalImage
-            src={playlist?.images[0]?.url}
+            src={playlist?.images?.[0]?.url}
             alt="Playlist Cover"
             width={300}
             height={300}

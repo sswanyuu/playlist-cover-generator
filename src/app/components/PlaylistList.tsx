@@ -74,7 +74,7 @@ export default function PlaylistList() {
             <PlaylistItem onClick={() => handlePlaylistClick(playlist.id)}>
               <Image
                 alt={playlist.name}
-                src={playlist.images[0]?.url}
+                src={playlist.images?.[0]?.url}
                 preview={false}
                 width={64}
                 height={64}
