@@ -2,7 +2,7 @@
 
 A web application that generates unique cover art for your Spotify playlists using AI. Create stunning, personalized playlist covers with just a few clicks!
 
-## 🚀 Live Demo: https://playlist-cover-generator.vercel.app
+### 🚀 Live Demo: https://playlist-cover-generator.vercel.app
 
 ## Features
 
@@ -28,6 +28,19 @@ A web application that generates unique cover art for your Spotify playlists usi
   - PostgreSQL
   - Spotify Web API
   - Leonardo.AI API
+
+
+## Login flow
+![截圖 2025-04-11 下午5 01 29](https://github.com/user-attachments/assets/1fdd7505-c237-4e1c-bfb0-ef8b319feb1b)
+![截圖 2025-04-11 下午5 01 50](https://github.com/user-attachments/assets/fcd7d8c7-e7b6-4a47-8252-67154af189a3)
+
+## Generation flow
+![截圖 2025-04-11 下午4 56 23](https://github.com/user-attachments/assets/085124ea-37f3-4724-b6be-8ea833aab490)
+![截圖 2025-04-11 下午4 57 43](https://github.com/user-attachments/assets/8e59e9ee-10a3-4418-a479-d3a2f5dcd10e)
+![截圖 2025-04-11 下午4 58 07](https://github.com/user-attachments/assets/e56d368d-da24-4175-80ba-f92e80a4a217)
+![截圖 2025-04-11 下午4 58 45](https://github.com/user-attachments/assets/ebc15b95-d9e0-4f1e-a1ce-8cd0abe1851e)
+
+
 
 ## Getting Started
 
@@ -111,14 +124,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Spotify for their amazing API
 - Next.js team for the fantastic framework
-- All contributors and users of this project
-
-### Login flow
-![截圖 2025-04-11 下午5 01 29](https://github.com/user-attachments/assets/1fdd7505-c237-4e1c-bfb0-ef8b319feb1b)
-![截圖 2025-04-11 下午5 01 50](https://github.com/user-attachments/assets/fcd7d8c7-e7b6-4a47-8252-67154af189a3)
-
-### Generation flow
-![截圖 2025-04-11 下午4 56 23](https://github.com/user-attachments/assets/085124ea-37f3-4724-b6be-8ea833aab490)
-![截圖 2025-04-11 下午4 57 43](https://github.com/user-attachments/assets/8e59e9ee-10a3-4418-a479-d3a2f5dcd10e)
-![截圖 2025-04-11 下午4 58 07](https://github.com/user-attachments/assets/e56d368d-da24-4175-80ba-f92e80a4a217)
-![截圖 2025-04-11 下午4 58 45](https://github.com/user-attachments/assets/ebc15b95-d9e0-4f1e-a1ce-8cd0abe1851e)
