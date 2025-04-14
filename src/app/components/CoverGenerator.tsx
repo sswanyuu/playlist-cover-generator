@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Image, Typography, message, theme } from "antd";
+import { Button, Image, Typography, App, theme } from "antd";
+import type { ImageProps } from "antd";
 import styled from "@emotion/styled";
 import {
   ArrowRightOutlined,
@@ -82,15 +83,23 @@ const slideAnimation = keyframes`
   }
 `;
 
-const OriginalImage = styled(Image)<{ isAnimating: boolean }>`
-  animation: ${({ isAnimating }) => (isAnimating ? slideAnimation : "none")} 1s
-    ease-in-out;
+const ImageWithAnimation = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $isAnimating,
+  alt = "",
+  ...rest
+}: { $isAnimating: boolean } & React.ImgHTMLAttributes<HTMLImageElement> &
+  ImageProps) => <Image alt={alt} {...rest} />;
+
+const OriginalImage = styled(ImageWithAnimation)<{ $isAnimating: boolean }>`
+  animation: ${({ $isAnimating }) => ($isAnimating ? slideAnimation : "none")}
+    1s ease-in-out;
 `;
 
-const GeneratedImage = styled(Image)<{ isAnimating: boolean }>`
+const GeneratedImage = styled(ImageWithAnimation)<{ $isAnimating: boolean }>`
   transition: transform 0.5s ease-in-out;
-  transform: ${({ isAnimating }) =>
-    isAnimating ? "translateX(-100%)" : "translateX(0)"};
+  transform: ${({ $isAnimating }) =>
+    $isAnimating ? "translateX(-100%)" : "translateX(0)"};
 `;
 
 interface CoverGeneratorProps {
@@ -110,6 +119,7 @@ export default function CoverGenerator({
   onCoverUpdate,
 }: CoverGeneratorProps) {
   const { token } = useToken();
+  const { message } = App.useApp();
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
@@ -164,10 +174,10 @@ export default function CoverGenerator({
       await onCoverUpdate(generatedImage);
       setIsAnimating(true);
       message.success("Playlist cover updated successfully!");
-      console.log(
-        `🚀🚀🚀 ~~~ ~ CoverGenerator.tsx:177 ~ handleUpdateCover ~ "Playlist cover updated successfully!":`,
-        "Playlist cover updated successfully!"
-      );
+      // TODO: handle case where playlist.images is undefined initially
+      if (playlist?.images?.[0]) {
+        playlist.images[0].url = generatedImage;
+      }
       // Reset animation after it completes
       setTimeout(() => {
         setIsAnimating(false);
@@ -194,7 +204,7 @@ export default function CoverGenerator({
             width={300}
             height={300}
             style={{ objectFit: "cover", borderRadius: token.borderRadius }}
-            isAnimating={isAnimating}
+            $isAnimating={isAnimating}
           />
         </PreviewBox>
         <ArrowContainer>
@@ -227,7 +237,7 @@ export default function CoverGenerator({
               width={300}
               height={300}
               style={{ objectFit: "cover", borderRadius: token.borderRadius }}
-              isAnimating={isAnimating}
+              $isAnimating={isAnimating}
             />
           ) : (
             "AI Generated Cover"
