@@ -51,8 +51,8 @@ export async function POST(request: NextRequest) {
           Use color, texture, composition, and visual themes to express the playlist — but the result must be 100% text-free.
         `,
         alchemy: true,
-        width: 256,
-        height: 256,
+        width: 512,
+        height: 512,
         modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3",
         num_images: 1,
         presetStyle: "NONE",
