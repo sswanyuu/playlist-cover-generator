@@ -124,11 +124,10 @@ export default function CoverGenerator({
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-
   const handleGenerateImage = async () => {
     if (!playlist?.name || !tracks) return;
-
     setGenerating(true);
+  
     try {
       const trackNames = tracks
         .map((track) => {
@@ -139,7 +138,7 @@ export default function CoverGenerator({
             : `"${name}"`;
         })
         .join(", ");
-
+  
       const response = await fetch("/api/generate-image", {
         method: "POST",
         headers: {
@@ -150,14 +149,34 @@ export default function CoverGenerator({
           trackNames: trackNames,
         }),
       });
-
+  
       if (!response.ok) {
-        throw new Error("Failed to generate image");
+        throw new Error("Failed to initiate generation");
       }
-
-      const data = await response.json();
-      setGeneratedImage(data.imageUrl);
-      message.success("Image generated successfully!");
+  
+      const { generationId } = await response.json();
+  
+      let attempts = 0;
+      const maxAttempts = 10;
+      let completed = false;
+  
+      while (!completed && attempts < maxAttempts) {
+        await new Promise((res) => setTimeout(res, 2000));
+        const poll = await fetch(`/api/generation-result?id=${generationId}`);
+        const result = await poll.json();
+  
+        if (result.status === "COMPLETE") {
+          setGeneratedImage(result.imageUrl);
+          message.success("Image generated successfully!");
+          completed = true;
+        }
+  
+        attempts++;
+      }
+  
+      if (!completed) {
+        message.error("Image generation timed out");
+      }
     } catch (error) {
       console.error("Error generating image:", error);
       message.error("Failed to generate image");
@@ -165,7 +184,6 @@ export default function CoverGenerator({
       setGenerating(false);
     }
   };
-
   const handleUpdateCover = async () => {
     if (!generatedImage) return;
 

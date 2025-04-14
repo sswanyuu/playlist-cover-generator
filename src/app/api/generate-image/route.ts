@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
 const LEONARDO_API_URL = "https://cloud.leonardo.ai/api/rest/v1/generations";
 
-// For testing purposes
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -14,19 +13,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Get user and check credits
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
     });
 
     if (!user || user.credits < 1) {
-      return NextResponse.json(
-        { error: "Insufficient credits" },
-        { status: 402 }
-      );
+      return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
     }
 
-    // Reduce credits
     await prisma.user.update({
       where: { id: session.user.id },
       data: { credits: { decrement: 1 } },
@@ -72,44 +66,9 @@ export async function POST(request: NextRequest) {
     const generationData = await generationResponse.json();
     const generationId = generationData.sdGenerationJob.generationId;
 
-    // Poll for the result
-    let imageUrl = null;
-    let attempts = 0;
-    const maxAttempts = 10;
-
-    while (!imageUrl && attempts < maxAttempts) {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
-      const resultResponse = await fetch(
-        `${LEONARDO_API_URL}/${generationId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${LEONARDO_API_KEY}`,
-          },
-        }
-      );
-
-      if (!resultResponse.ok) {
-        throw new Error("Failed to fetch generation result");
-      }
-
-      const resultData = await resultResponse.json();
-      if (resultData.generations_by_pk.status === "COMPLETE") {
-        imageUrl = resultData.generations_by_pk.generated_images[0].url;
-        break;
-      }
-
-      attempts++;
-    }
-
-    if (!imageUrl) {
-      throw new Error("Generation timed out");
-    }
-    return NextResponse.json({ imageUrl });
+    return NextResponse.json({ generationId });
   } catch (error) {
     console.error("Error generating image:", error);
-    return NextResponse.json(
-      { error: "Failed to generate image" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to start generation" }, { status: 500 });
   }
 }
