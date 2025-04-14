@@ -1,7 +1,7 @@
 "use client";
 
 import { useCredits } from "@/lib/hooks/useCredits";
-import { Badge, Button, Spin, Typography } from "antd";
+import { Badge, BadgeProps, Button, Spin, Typography } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { useRouter, usePathname } from "next/navigation";
@@ -46,9 +46,15 @@ const BadgeContainer = styled.div`
   gap: 8px;
 `;
 
-const StyledBadge = styled(Badge)`
+const BadgeWithError = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $error,
+  ...rest
+}: { $error: boolean } & BadgeProps) => <Badge {...rest} />;
+
+const StyledBadge = styled(BadgeWithError)<{ $error?: boolean }>`
   .ant-badge-count {
-    background-color: #1db954;
+    background-color: ${({ $error }) => ($error ? "#ff4d4f" : "#1db954")};
     color: white;
     font-size: 14px;
     font-weight: 600;
@@ -85,7 +91,7 @@ export function Header() {
         ) : (
           <CreditContainer>
             <Typography.Text strong>Remaining Credits:</Typography.Text>
-            <StyledBadge count={credits} />
+            <StyledBadge count={credits} showZero $error={credits <= 0} />
           </CreditContainer>
         )}
       </BadgeContainer>
