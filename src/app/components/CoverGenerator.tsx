@@ -1,32 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Image, Typography, App, theme } from "antd";
+import { Button, Image, Typography, App, theme, Grid } from "antd";
 import type { ImageProps } from "antd";
 import styled from "@emotion/styled";
 import {
-  ArrowRightOutlined,
   LoadingOutlined,
   ArrowLeftOutlined,
+  ArrowUpOutlined,
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
+import Paragraph from "antd/es/skeleton/Paragraph";
 
-const { Title } = Typography;
-const { useToken } = theme;
-
+//add responsive design for mobile
 const PreviewSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 32px;
   padding: 24px;
   background-color: ${({ theme }) => theme.token.colorBgContainer};
   border-radius: ${({ theme }) => theme.token.borderRadius}px;
   position: relative;
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 16px;
+  }
 `;
 
-const ArrowContainer = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,7 +43,6 @@ const ArrowContainer = styled.div`
 const SetCoverButton = styled(Button)`
   background-color: ${purpleButtonColors.colorPurple};
   border: none;
-  margin-bottom: 8px;
   &:hover {
     background-color: ${purpleButtonColors.colorPurpleHover} !important;
   }
@@ -60,7 +63,7 @@ const GenerateButton = styled(Button)`
 
 const PreviewBox = styled.div`
   width: 300px;
-  height: 300px;
+  aspect-ratio: 1;
   background-color: ${({ theme }) => theme.token.colorBgContainer};
   border-radius: ${({ theme }) => theme.token.borderRadius}px;
   display: flex;
@@ -69,6 +72,9 @@ const PreviewBox = styled.div`
   color: ${({ theme }) => theme.token.colorTextSecondary};
   position: relative;
   overflow: hidden;
+  @media (max-width: 768px) {
+    max-width: 200px;
+  }
 `;
 
 const slideAnimation = keyframes`
@@ -118,6 +124,9 @@ export default function CoverGenerator({
   tracks,
   onCoverUpdate,
 }: CoverGeneratorProps) {
+  const { Title, Paragraph } = Typography;
+  const { useBreakpoint } = Grid;
+  const { useToken } = theme;
   const { token } = useToken();
   const { message } = App.useApp();
   const [generating, setGenerating] = useState(false);
@@ -127,7 +136,7 @@ export default function CoverGenerator({
   const handleGenerateImage = async () => {
     if (!playlist?.name || !tracks) return;
     setGenerating(true);
-  
+
     try {
       const trackNames = tracks
         .map((track) => {
@@ -138,7 +147,7 @@ export default function CoverGenerator({
             : `"${name}"`;
         })
         .join(", ");
-  
+
       const response = await fetch("/api/generate-image", {
         method: "POST",
         headers: {
@@ -149,31 +158,31 @@ export default function CoverGenerator({
           trackNames: trackNames,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to initiate generation");
       }
-  
+
       const { generationId } = await response.json();
-  
+
       let attempts = 0;
       const maxAttempts = 10;
       let completed = false;
-  
+
       while (!completed && attempts < maxAttempts) {
         await new Promise((res) => setTimeout(res, 2000));
         const poll = await fetch(`/api/generation-result?id=${generationId}`);
         const result = await poll.json();
-  
+
         if (result.status === "COMPLETE") {
           setGeneratedImage(result.imageUrl);
           message.success("Image generated successfully!");
           completed = true;
         }
-  
+
         attempts++;
       }
-  
+
       if (!completed) {
         message.error("Image generation timed out");
       }
@@ -208,7 +217,8 @@ export default function CoverGenerator({
       setUpdating(false);
     }
   };
-
+  const screen = useBreakpoint();
+  const isMobile = screen.xs;
   return (
     <>
       <Title level={2} style={{ color: token.colorTextBase }}>
@@ -225,28 +235,27 @@ export default function CoverGenerator({
             $isAnimating={isAnimating}
           />
         </PreviewBox>
-        <ArrowContainer>
-          <SetCoverButton
-            type="primary"
-            size="large"
-            disabled={!generatedImage}
-            onClick={handleUpdateCover}
-            loading={updating}
-          >
-            Set as Cover
-          </SetCoverButton>
-          <ArrowLeftOutlined style={{ fontSize: 24 }} />
-          <ArrowRightOutlined style={{ fontSize: 24 }} />
+        <ButtonContainer>
           <GenerateButton
             type="primary"
-            size="large"
+            size={isMobile ? "small" : "large"}
             onClick={handleGenerateImage}
             loading={generating}
             icon={generating ? <LoadingOutlined /> : null}
           >
-            Generate Cover Image
+            Generate
           </GenerateButton>
-        </ArrowContainer>
+          <SetCoverButton
+            type="primary"
+            size={isMobile ? "small" : "large"}
+            disabled={!generatedImage}
+            onClick={handleUpdateCover}
+            loading={updating}
+          >
+            {screen.xs ? <ArrowUpOutlined /> : <ArrowLeftOutlined />}
+            Set as Cover
+          </SetCoverButton>
+        </ButtonContainer>
         <PreviewBox>
           {generatedImage ? (
             <GeneratedImage
