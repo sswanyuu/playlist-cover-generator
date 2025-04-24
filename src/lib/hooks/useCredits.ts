@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 export function useCredits() {
-  const [credits, setCredits] = useState<number>(0);
+  const [credits, setCredits] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();

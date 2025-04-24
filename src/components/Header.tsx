@@ -1,7 +1,7 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import { useCredits } from "@/lib/hooks/useCredits";
-import { Badge, BadgeProps, Button, Spin, Typography, Grid } from "antd";
+import { Badge, Button, Spin, Typography, Grid, theme } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { LogoutOutlined } from "@ant-design/icons";
@@ -47,16 +47,8 @@ const BadgeContainer = styled.div`
   gap: 8px;
 `;
 
-const BadgeWithError = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  $error,
-  ...rest
-}: { $error: boolean } & BadgeProps) => <Badge {...rest} />;
-
-const StyledBadge = styled(BadgeWithError)<{ $error?: boolean }>`
+const StyledBadge = styled(Badge)`
   .ant-badge-count {
-    background-color: ${({ $error }) => ($error ? "#ff4d4f" : "#1db954")};
-    color: white;
     font-size: 14px;
     font-weight: 600;
   }
@@ -69,6 +61,8 @@ const ErrorText = styled.span`
 
 export function Header() {
   const { credits, isLoading, error } = useCredits();
+
+  const { token } = theme.useToken();
   const router = useRouter();
   const pathname = usePathname();
   const { data: isLoggedIn } = useSession();
@@ -109,7 +103,15 @@ export function Header() {
             ) : (
               <CreditContainer>
                 <Text strong>Remaining Credits:</Text>
-                <StyledBadge count={credits} showZero $error={credits <= 0} />
+                <StyledBadge
+                  count={credits ?? 0}
+                  showZero
+                  color={
+                    credits && credits > 0
+                      ? token.colorSuccess
+                      : token.colorError
+                  }
+                />
               </CreditContainer>
             )}
           </BadgeContainer>

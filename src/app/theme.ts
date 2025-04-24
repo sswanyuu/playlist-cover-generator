@@ -23,7 +23,7 @@ export const spotifyTheme: ThemeConfig = {
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
 
     // Highlight/Fancy Accent
-    colorSuccess: "#00FFA3", // Futuristic teal
+    colorSuccess: "#1DB954", // Futuristic teal
     colorWarning: "#FFD700", // Gold highlight
     colorError: "#FF4D4F",
   },
