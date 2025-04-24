@@ -255,7 +255,7 @@ export default function CoverGenerator({
             alt="Playlist Cover"
             width={300}
             height={300}
-            style={{ objectFit: "cover", borderRadius: token.borderRadius }}
+            style={{ objectFit: "contain", borderRadius: token.borderRadius }}
             $isAnimating={isAnimating}
           />
         </PreviewBox>
@@ -287,7 +287,7 @@ export default function CoverGenerator({
               alt="Generated Cover"
               width={300}
               height={300}
-              style={{ objectFit: "cover", borderRadius: token.borderRadius }}
+              style={{ objectFit: "contain", borderRadius: token.borderRadius }}
               $isAnimating={isAnimating}
             />
           ) : (
