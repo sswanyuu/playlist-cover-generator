@@ -96,7 +96,7 @@ export function Header() {
             Logout
           </Button>
           <BadgeContainer>
-            {isLoading ? (
+            {isLoading || credits == null ? (
               <Spin size="small" />
             ) : error ? (
               <ErrorText>Error loading credits</ErrorText>

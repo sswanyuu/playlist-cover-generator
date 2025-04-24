@@ -29,11 +29,7 @@ export async function POST(request: NextRequest) {
     const { playlistName, trackNames } = await request.json();
 
     // For testing purpose, don't remove this before productising
-    // return NextResponse.json({ imageUrl: "https://picsum.photos/500" });
-    // return NextResponse.json({
-    //   imageUrl:
-    //     "https://cdn.leonardo.ai/users/ee2e4910-360b-438c-9672-e3df73c0c6fc/generations/fbd9fe46-1f96-4876-bc59-d3726f15f81f/Leonardo_Phoenix_10_Create_a_vibrant_aesthetic_and_c_0.jpg",
-    // });
+    return NextResponse.json({ generationId: "78ccc2de-da6c-4cef-bad1-b081704f2857" });
     // Create generation
     const generationResponse = await fetch(LEONARDO_API_URL, {
       method: "POST",
