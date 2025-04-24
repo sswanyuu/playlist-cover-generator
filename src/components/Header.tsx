@@ -1,7 +1,7 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import { useCredits } from "@/lib/hooks/useCredits";
-import { Badge, BadgeProps, Button, Spin, Typography } from "antd";
+import { Badge, BadgeProps, Button, Spin, Typography, Grid } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { LogoutOutlined } from "@ant-design/icons";
@@ -11,7 +11,7 @@ const HeaderContainer = styled.header`
   position: fixed;
   top: 0;
   z-index: 1000;
-  padding: 8px 16px;
+  padding: 16px 16px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -71,7 +71,14 @@ export function Header() {
   const { credits, isLoading, error } = useCredits();
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: isLoggedIn } = useSession();
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+  const isMobile = screens.xs;
+  const { Text } = Typography;
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
 
   return (
     <HeaderContainer>
@@ -81,33 +88,35 @@ export function Header() {
           icon={<ArrowLeftOutlined />}
           onClick={() => router.push("/")}
         >
-          Back to Home
+          {isMobile ? "" : "Back to Home"}
         </BackButton>
       )}
       <Spacer />
-      {session ? <Button
-        type="primary"
-        icon={<LogoutOutlined />}
-        onClick={() => signOut()}
-      >
-        Logout
-      </Button>: (
-        <Typography.Text strong>
-          Welcome, Guest!
-        </Typography.Text>
+      {isLoggedIn ? (
+        <>
+          <Button
+            type="primary"
+            icon={<LogoutOutlined />}
+            onClick={handleSignOut}
+          >
+            Logout
+          </Button>
+          <BadgeContainer>
+            {isLoading ? (
+              <Spin size="small" />
+            ) : error ? (
+              <ErrorText>Error loading credits</ErrorText>
+            ) : (
+              <CreditContainer>
+                <Text strong>Remaining Credits:</Text>
+                <StyledBadge count={credits} showZero $error={credits <= 0} />
+              </CreditContainer>
+            )}
+          </BadgeContainer>
+        </>
+      ) : (
+        <Text strong>Welcome, Guest!</Text>
       )}
-      <BadgeContainer>
-        {isLoading ? (
-          <Spin size="small" />
-        ) : error ? (
-          <ErrorText>Error loading credits</ErrorText>
-        ) : (
-          <CreditContainer>
-            <Typography.Text strong>Remaining Credits:</Typography.Text>
-            <StyledBadge count={credits} showZero $error={credits <= 0} />
-          </CreditContainer>
-        )}
-      </BadgeContainer>
     </HeaderContainer>
   );
 }

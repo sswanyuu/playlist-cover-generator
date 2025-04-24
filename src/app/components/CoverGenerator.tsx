@@ -11,7 +11,6 @@ import {
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
-import Paragraph from "antd/es/skeleton/Paragraph";
 
 //add responsive design for mobile
 const PreviewSection = styled.div`
