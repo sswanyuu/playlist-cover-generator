@@ -12,14 +12,7 @@ export async function PUT(
   }
 
   try {
-    const { imageUrl } = await request.json();
-
-    // First, fetch the image from the URL
-    const imageResponse = await fetch(imageUrl);
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = Buffer.from(imageBuffer).toString("base64");
-
-    // Then, upload it to Spotify
+    const { imageBase64 } = await request.json();
     const { id } = await context.params;
     const response = await fetch(
       `https://api.spotify.com/v1/playlists/${id}/images`,
@@ -29,7 +22,7 @@ export async function PUT(
           Authorization: `Bearer ${session.accessToken}`,
           "Content-Type": "image/jpeg",
         },
-        body: base64Image,
+        body: imageBase64,
       }
     );
 

@@ -115,7 +115,7 @@ interface CoverGeneratorProps {
   tracks: Array<{
     name: string;
   }>;
-  onCoverUpdate: (imageUrl: string) => Promise<void>;
+  onCoverUpdate: (imageBase64: string) => Promise<void>;
 }
 
 export default function CoverGenerator({
@@ -132,6 +132,22 @@ export default function CoverGenerator({
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const fetchImageAsBase64 = async (url: string): Promise<string> => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+  
+    const imageBitmap = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+    const size = 300;
+    canvas.width = size;
+    canvas.height = size;
+  
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(imageBitmap, 0, 0, size, size);
+  
+    const base64Data = canvas.toDataURL('image/jpeg', 0.8); // Compress to reduce size
+    return base64Data.replace(/^data:image\/jpeg;base64,/, ''); // Strip prefix
+  }
   const handleGenerateImage = async () => {
     if (!playlist?.name || !tracks) return;
     setGenerating(true);
@@ -197,7 +213,9 @@ export default function CoverGenerator({
 
     setUpdating(true);
     try {
-      await onCoverUpdate(generatedImage);
+      const imageBase64 = await fetchImageAsBase64(generatedImage);
+
+      await onCoverUpdate(imageBase64);
       setIsAnimating(true);
       message.success("Playlist cover updated successfully!");
       // TODO: handle case where playlist.images is undefined initially

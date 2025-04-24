@@ -61,13 +61,13 @@ export default function PlaylistPage() {
     fetchData();
   }, [id]);
 
-  const handleCoverUpdate = async (imageUrl: string) => {
+  const handleCoverUpdate = async (imageBase64: string) => {
     const response = await fetch(`/api/spotify/playlists/${id}/cover`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl }),
+      body: JSON.stringify({ imageBase64 }),
     });
 
     if (!response.ok) {
