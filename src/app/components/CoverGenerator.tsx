@@ -221,9 +221,16 @@ export default function CoverGenerator({
   const isMobile = screen.xs;
   return (
     <>
-      <Title level={2} style={{ color: token.colorTextBase }}>
+      <Title level={isMobile ? 4 : 3} style={{ color: token.colorTextBase }}>
         {playlist?.name}
       </Title>
+      <Paragraph strong italic>
+        ✨ Create a stunning playlist cover with the power of AI.
+      </Paragraph>
+      <Paragraph>
+        Transform your playlist into a visual vibe. Just click Generate, and let
+        the magic happen.
+      </Paragraph>
       <PreviewSection>
         <PreviewBox>
           <OriginalImage
