@@ -11,8 +11,7 @@ import {
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
-import StyleSelector from "./StyleSelector";
-import ImageHistory from "./ImageHistory";
+
 
 //add responsive design for mobile
 const PreviewSection = styled.div`
@@ -117,15 +116,17 @@ interface CoverGeneratorProps {
   tracks: Array<{
     name: string;
   }>;
+  selectedStyleId: string;
   onCoverUpdate: (imageBase64: string) => Promise<void>;
 }
 
 export default function CoverGenerator({
   playlist,
   tracks,
+  selectedStyleId,
   onCoverUpdate,
 }: CoverGeneratorProps) {
-  const { Title, Paragraph } = Typography;
+  const { Paragraph } = Typography;
   const { useBreakpoint } = Grid;
   const { useToken } = theme;
   const { token } = useToken();
@@ -134,7 +135,6 @@ export default function CoverGenerator({
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [selectedStyleId, setSelectedStyleId] = useState("dynamic");
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -152,7 +152,10 @@ export default function CoverGenerator({
     return base64Data.replace(/^data:image\/jpeg;base64,/, ''); // Strip prefix
   }
   const handleGenerateImage = async () => {
-    if (!playlist?.name || !tracks) return;
+    if (!playlist?.name || !tracks || tracks.length === 0) {
+      message.warning("Please select at least one track to generate a cover");
+      return;
+    }
     setGenerating(true);
 
     try {
@@ -242,9 +245,6 @@ export default function CoverGenerator({
   const isMobile = screen.xs;
   return (
     <>
-      <Title level={isMobile ? 4 : 3} style={{ color: token.colorTextBase }}>
-        {playlist?.name}
-      </Title>
       <Paragraph strong italic>
         ✨ Create a stunning playlist cover with the power of AI.
       </Paragraph>
@@ -252,12 +252,12 @@ export default function CoverGenerator({
         Transform your playlist into a visual vibe. Just click Generate, and let
         the magic happen.
       </Paragraph>
-
-      <StyleSelector 
-        selectedStyleId={selectedStyleId}
-        onStyleChange={setSelectedStyleId}
-      />
-
+      
+      {tracks && tracks.length > 0 && (
+        <Paragraph type="secondary">
+          🎵 Using {tracks.length} selected track{tracks.length === 1 ? '' : 's'} for generation
+        </Paragraph>
+      )}
       <PreviewSection>
         <PreviewBox>
           <OriginalImage
@@ -275,6 +275,7 @@ export default function CoverGenerator({
             size={isMobile ? "small" : "large"}
             onClick={handleGenerateImage}
             loading={generating}
+            disabled={!tracks || tracks.length === 0}
             icon={generating ? <LoadingOutlined /> : null}
           >
             Generate
