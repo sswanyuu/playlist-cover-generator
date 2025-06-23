@@ -2,9 +2,8 @@ import { List, Typography, Checkbox, theme, Button, Space } from "antd";
 import styled from "@emotion/styled";
 import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { useToken } = theme;
-
 const TrackListContainer = styled.div`
   margin-top: 24px;
 `;
@@ -15,7 +14,7 @@ const SelectionHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 16px;
   
-  ${mediaQueries.mobile} {
+  ${mediaQueries.md} {
     flex-direction: column;
     justify-content: center;
     gap: 16px;
@@ -94,16 +93,7 @@ export default function SelectableTrackList({
   return (
     <TrackListContainer>
       <SelectionHeader>
-        <div>
-          <Title level={4} style={{ margin: 0, color: token.colorText }}>
-            {selectedTracks.length} of {tracks.length} selected
-          </Title>
-          <Text type="secondary">
-            Choose tracks that best represent your playlist&apos;s mood
-          </Text>
-        </div>
         <Space 
-          direction={isMobile ? "vertical" : "horizontal"}
           size={isMobile ? 8 : 12}
           style={{ width: isMobile ? '100%' : 'auto' }}
         >

@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
-import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import SelectableTrackList from "@/app/components/SelectableTrackList";
 import CoverGenerator from "@/app/components/CoverGenerator";
 import StyleSelector from "@/app/components/StyleSelector";
 import StepCard from "@/app/components/StepCard";
-import StepsProgress from "@/app/components/StepsProgress";
 import FloatingStepNav from "@/app/components/FloatingStepNav";
-import { useResponsive } from "@/app/hooks/useResponsive";
-
+import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
+import StepsProgress from "@/app/components/StepsProgress";
 const { Title, Paragraph } = Typography;
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  
   padding: 0;
 `;
 
@@ -27,9 +25,9 @@ const ContentWrapper = styled.div`
   padding: 40px 24px;
 `;
 
-const HeaderSection = styled.div`
+const HeroSection = styled.div`
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   padding: 40px 0;
 `;
 
@@ -42,11 +40,33 @@ const PlaylistTitle = styled(Title)`
   font-weight: 700;
 `;
 
+const CoverSection = styled.div`
+  margin-bottom: 48px;
+  padding: 32px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  
+  ${mediaQueries.mobile} {
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+`;
 
 
-
-
-
+const ConfigurationSection = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+  
+  ${mediaQueries.mobile} {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+`;
 
 interface Track {
   name: string;
@@ -131,98 +151,88 @@ export default function PlaylistPage() {
   // Calculate step completion
   const isStep1Complete = selectedTracks.length > 0;
   const isStep2Complete = selectedStyleId !== "";
-  const isStep3Ready = isStep1Complete && isStep2Complete;
+  const canGenerate = isStep1Complete && isStep2Complete;
 
   return (
     <PageContainer>
       <ContentWrapper>
-        <HeaderSection>
+        <HeroSection>
           <PlaylistTitle level={isMobile ? 3 : 1}>
             {playlist?.name}
           </PlaylistTitle>
+          <Paragraph strong italic>
+        ✨ Create a stunning playlist cover with the power of AI.
+      </Paragraph>
           <Paragraph style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.8)', maxWidth: '600px', margin: '0 auto' }}>
             Transform your playlist into a stunning visual experience with AI-powered cover generation
           </Paragraph>
-        </HeaderSection>
+        </HeroSection>
 
-        <StepsProgress
-          currentStep={isStep3Ready ? 2 : isStep2Complete ? 1 : 0}
-          steps={[
-            {
-              title: 'Select Tracks',
-              description: `${selectedTracks.length} tracks selected`,
-              icon: <SoundOutlined />,
-            },
-            {
-              title: 'Choose Style',
-              description: 'AI art style selected',
-              icon: <BgColorsOutlined />,
-            },
-            {
-              title: 'Generate Cover',
-              description: 'Create your masterpiece',
-              icon: <ThunderboltOutlined />,
-            },
-          ]}
-        />
-
-                {/* Step 1: Track Selection */}
-        <div id="step-tracks">
-          <StepCard
-            title="Select Your Tracks"
-            description="Choose the songs that define your playlist's mood"
-            icon={<SoundOutlined />}
-            active={!isStep1Complete}
-            completed={isStep1Complete}
-            showProgress={true}
-            progressCount={selectedTracks.length}
-            progressLabel="Selected"
-          >
-            <SelectableTrackList 
-              tracks={allTracks}
-              loading={loading}
-              selectedTracks={selectedTracks}
-              onSelectionChange={handleTrackSelectionChange}
-            />
-          </StepCard>
-        </div>
-
-        {/* Step 2: Style Selection */}
-        <div id="step-style">
-          <StepCard
-            title="Choose Your Style"
-            description="Select an AI art style that matches your playlist's vibe"
-            icon={<BgColorsOutlined />}
-            active={isStep1Complete && !isStep2Complete}
-            completed={isStep2Complete}
-          >
-            <StyleSelector 
-              selectedStyleId={selectedStyleId}
-              onStyleChange={setSelectedStyleId}
-            />
-          </StepCard>
-        </div>
-        
-        {/* Step 3: Cover Generation */}
+        {/* Main Cover Generation Section */}
         <div id="step-generate">
-          <StepCard
-            title="Generate Your Cover"
-            description="Create and apply your AI-generated playlist cover"
-            icon={<ThunderboltOutlined />}
-            active={isStep3Ready}
-          >
+          <CoverSection>
             <CoverGenerator
               playlist={playlist}
               tracks={selectedTracks}
               selectedStyleId={selectedStyleId}
               onCoverUpdate={handleCoverUpdate}
             />
-          </StepCard>
+          </CoverSection>
         </div>
+
+        
+
+        {/* Configuration Section */}
+        <ConfigurationSection>
+          {/* Track Selection */}
+                {/* Style Selection */}
+                <div id="step-style">
+            <StepCard
+              title="Choose Your Style"
+              description="Select an AI art style that matches your playlist&apos;s vibe"
+              icon={<BgColorsOutlined />}
+              active={isStep1Complete && !isStep2Complete}
+              completed={isStep2Complete}
+            >
+              <StyleSelector 
+                selectedStyleId={selectedStyleId}
+                onStyleChange={setSelectedStyleId}
+              />
+            </StepCard>
+          </div>
+          <div id="step-tracks">
+            <StepCard
+              title="Select Your Tracks"
+              description="Choose the songs that define your playlist&apos;s mood"
+              icon={<SoundOutlined />}
+              active={!isStep1Complete}
+              completed={isStep1Complete}
+              showProgress={true}
+              progressCount={selectedTracks.length}
+              progressLabel="Selected"
+            >
+              <SelectableTrackList 
+                tracks={allTracks}
+                loading={loading}
+                selectedTracks={selectedTracks}
+                onSelectionChange={handleTrackSelectionChange}
+              />
+            </StepCard>
+          </div>
+
+    
+        </ConfigurationSection>
 
         {/* Floating Step Navigation */}
         <FloatingStepNav
           steps={[
+            {
+              anchor: "step-generate",
+              title: "Generate Your Cover",
+              icon: <ThunderboltOutlined />,
+              completed: false,
+              active: canGenerate,
+            },
             {
               anchor: "step-tracks",
               title: "Select Your Tracks",
@@ -236,13 +246,6 @@ export default function PlaylistPage() {
               icon: <BgColorsOutlined />,
               completed: isStep2Complete,
               active: isStep1Complete && !isStep2Complete,
-            },
-            {
-              anchor: "step-generate",
-              title: "Generate Your Cover",
-              icon: <ThunderboltOutlined />,
-              completed: false,
-              active: isStep3Ready,
             },
           ]}
         />

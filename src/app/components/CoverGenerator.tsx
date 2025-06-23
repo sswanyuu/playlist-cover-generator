@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Image, Typography, App, theme } from "antd";
+import { Button, Image, App, theme, Space } from "antd";
 import type { ImageProps } from "antd";
 import styled from "@emotion/styled";
 import {
   LoadingOutlined,
   ArrowLeftOutlined,
   ArrowUpOutlined,
+  BgColorsOutlined,
+  SoundOutlined,
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
 import { useResponsiveValue } from "@/app/utils/responsive";
 import { mediaQueries } from "@/app/hooks/useResponsive";
+import { getStyleById } from "@/lib/leonardo-styles";
 
 //add responsive design for mobile
 const PreviewSection = styled.div`
@@ -29,6 +32,75 @@ const PreviewSection = styled.div`
   ${mediaQueries.mobile} {
     flex-direction: column;
     gap: 16px;
+  }
+`;
+
+const StyleIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(82, 196, 26, 0.1);
+  border: 1px solid rgba(82, 196, 26, 0.3);
+  border-radius: 12px;
+  
+  ${mediaQueries.mobile} {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+`;
+
+const TrackIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(82, 196, 26, 0.1);
+  border: 1px solid rgba(82, 196, 26, 0.3);
+  border-radius: 12px;
+  
+  ${mediaQueries.mobile} {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+`;
+
+const IndicatorsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  
+  ${mediaQueries.mobile} {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+`;
+
+const StyleInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const StyleName = styled.span`
+  font-weight: 600;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+const StyleDescription = styled.span`
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  
+  ${mediaQueries.mobile} {
+    font-size: 13px;
   }
 `;
 
@@ -135,7 +207,6 @@ export default function CoverGenerator({
   selectedStyleId,
   onCoverUpdate,
 }: CoverGeneratorProps) {
-  const { Paragraph } = Typography;
   const { useToken } = theme;
   const { token } = useToken();
   const { message } = App.useApp();
@@ -147,6 +218,9 @@ export default function CoverGenerator({
   
   // Responsive button sizes
   const buttonSize = responsive.isMobile ? "small" : "large";
+  
+  // Get selected style info
+  const selectedStyle = getStyleById(selectedStyleId);
   
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
@@ -256,19 +330,48 @@ export default function CoverGenerator({
   };
   return (
     <>
-      <Paragraph strong italic>
-        ✨ Create a stunning playlist cover with the power of AI.
-      </Paragraph>
-      <Paragraph>
-        Transform your playlist into a visual vibe. Just click Generate, and let
-        the magic happen.
-      </Paragraph>
+
       
-      {tracks && tracks.length > 0 && (
-        <Paragraph type="secondary">
-          🎵 Using {tracks.length} selected track{tracks.length === 1 ? '' : 's'} for generation
-        </Paragraph>
+      {/* Style and Track Indicators */}
+      {(selectedStyle || (tracks && tracks.length > 0)) && (
+        <IndicatorsContainer>
+          {/* Style Indicator */}
+          {selectedStyle && (
+            <StyleIndicator>
+              <Space align="center" size={12}>
+                <BgColorsOutlined style={{ fontSize: '20px', color: 'rgba(82, 196, 26, 0.8)' }} />
+                <StyleInfo>
+                  <StyleName>Style: {selectedStyle.name}</StyleName>
+                  <StyleDescription>{selectedStyle.description}</StyleDescription>
+                </StyleInfo>
+              </Space>
+            </StyleIndicator>
+          )}
+          
+          {/* Track Count Indicator */}
+          {tracks && tracks.length > 0 && (
+            <TrackIndicator>
+              <Space align="center" size={12}>
+                <SoundOutlined style={{ fontSize: '20px', color: 'rgba(82, 196, 26, 0.8)' }} />
+                <StyleInfo>
+                  <StyleName>
+                    {tracks.length} Track{tracks.length === 1 ? '' : 's'} Selected
+                  </StyleName>
+                  <StyleDescription>
+                    {tracks.length < 5 
+                      ? "Consider adding more tracks for better AI understanding"
+                      : tracks.length > 15 
+                      ? "Great selection! AI will use these to understand your music taste"
+                      : "Perfect amount of tracks for AI generation"
+                    }
+                  </StyleDescription>
+                </StyleInfo>
+              </Space>
+            </TrackIndicator>
+          )}
+        </IndicatorsContainer>
       )}
+      
       <PreviewSection>
         <PreviewBox>
           <OriginalImage

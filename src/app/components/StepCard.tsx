@@ -27,10 +27,9 @@ const StyledCard = styled(Card)`
 
 const StepHeader = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
-  ${mediaQueries.xs} {
+ 
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
