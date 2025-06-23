@@ -11,6 +11,8 @@ import {
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
+import StyleSelector from "./StyleSelector";
+import ImageHistory from "./ImageHistory";
 
 //add responsive design for mobile
 const PreviewSection = styled.div`
@@ -132,6 +134,7 @@ export default function CoverGenerator({
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [selectedStyleId, setSelectedStyleId] = useState("dynamic");
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -171,6 +174,7 @@ export default function CoverGenerator({
         body: JSON.stringify({
           playlistName: playlist.name,
           trackNames: trackNames,
+          styleId: selectedStyleId,
         }),
       });
 
@@ -248,6 +252,12 @@ export default function CoverGenerator({
         Transform your playlist into a visual vibe. Just click Generate, and let
         the magic happen.
       </Paragraph>
+
+      <StyleSelector 
+        selectedStyleId={selectedStyleId}
+        onStyleChange={setSelectedStyleId}
+      />
+
       <PreviewSection>
         <PreviewBox>
           <OriginalImage

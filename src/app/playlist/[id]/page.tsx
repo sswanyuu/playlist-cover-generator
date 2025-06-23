@@ -44,7 +44,8 @@ export default function PlaylistPage() {
 
         const tracksData = await tracksResponse.json();
         const playlistData = await playlistResponse.json();
-
+//Todo: do not set the first 15 tracks as the tracks to sent to the cover generator
+//Todo: enable the user to select the tracks to send to the cover generator
         setTracks(
           tracksData.items
             .slice(0, 15)

@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { config } from "@/lib/config";
+import { getStyleById, getDefaultStyle } from "@/lib/leonardo-styles";
 
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
 const LEONARDO_API_URL = "https://cloud.leonardo.ai/api/rest/v1/generations";
@@ -13,24 +15,33 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-    });
+    // Skip credits check in development
+    if (!config.database.skipCreditsCheck) {
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+      });
 
-    if (!user || user.credits < 1) {
-      return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
+      if (!user || user.credits < 1) {
+        return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
+      }
+
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: { credits: { decrement: 1 } },
+      });
     }
 
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { credits: { decrement: 1 } },
-    });
-
-    const { playlistName, trackNames } = await request.json();
-
-    // For testing purpose, don't remove this before productising
-    return NextResponse.json({ generationId: "78ccc2de-da6c-4cef-bad1-b081704f2857" });
-    // Create generation
+    const { playlistName, trackNames, styleId } = await request.json();
+    
+    // Get the style configuration by styleId
+    const selectedStyle = getStyleById(styleId) || getDefaultStyle();
+    
+    // if (config.leonardo.useMockData) {
+    //   console.log("Using mock data for development");
+    //   return NextResponse.json({ generationId: config.leonardo.mockGenerationId });
+    // }
+    console.log("🚀 ~ POST ~ selectedStyle:", selectedStyle)
+    // Real Leonardo AI API call for production
     const generationResponse = await fetch(LEONARDO_API_URL, {
       method: "POST",
       headers: {
@@ -49,8 +60,9 @@ export async function POST(request: NextRequest) {
         alchemy: true,
         width: 512,
         height: 512,
-        modelId: "de7d3faf-762f-48e0-b3b7-9d0ac3a3fcf3",
+        modelId: selectedStyle.modelId,
         num_images: 1,
+        styleUUID: selectedStyle.styleUUID,
         presetStyle: "NONE",
         expandedDomain: true,
       }),
