@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Layout, Typography } from "antd";
 import { keyframes } from "@emotion/react";
+import { mediaQueries } from "@/app/hooks/useResponsive";
 
 declare module "@emotion/react" {
   export interface Theme {
@@ -54,6 +55,16 @@ export const StyledTitle = styled(Typography.Title)`
   max-width: 800px;
   line-height: 1.2;
   padding: 0 20px;
+  
+  ${mediaQueries.mobile} {
+    font-size: 48px;
+    max-width: 600px;
+  }
+  
+  ${mediaQueries.xs} {
+    font-size: 36px;
+    max-width: 90%;
+  }
 `;
 
 export const StyledSubtitle = styled(Typography.Text)`
@@ -64,4 +75,9 @@ export const StyledSubtitle = styled(Typography.Text)`
   text-align: center;
   max-width: 600px;
   text-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+  
+  ${mediaQueries.mobile} {
+    font-size: ${({ theme }) => theme.token.fontSize}px;
+    max-width: 90%;
+  }
 `;

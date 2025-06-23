@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
-import { Typography, Grid } from "antd";
+import { Typography } from "antd";
 import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import SelectableTrackList from "@/app/components/SelectableTrackList";
 import CoverGenerator from "@/app/components/CoverGenerator";
@@ -11,9 +11,9 @@ import StyleSelector from "@/app/components/StyleSelector";
 import StepCard from "@/app/components/StepCard";
 import StepsProgress from "@/app/components/StepsProgress";
 import FloatingStepNav from "@/app/components/FloatingStepNav";
+import { useResponsive } from "@/app/hooks/useResponsive";
 
 const { Title, Paragraph } = Typography;
-const { useBreakpoint } = Grid;
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -71,8 +71,7 @@ export default function PlaylistPage() {
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [loading, setLoading] = useState(true);
   
-  const screens = useBreakpoint();
-  const isMobile = !!screens.xs;
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     const fetchData = async () => {

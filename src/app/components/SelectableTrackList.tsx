@@ -1,20 +1,25 @@
-import { List, Typography, Checkbox, theme, Button, Space, Grid } from "antd";
+import { List, Typography, Checkbox, theme, Button, Space } from "antd";
 import styled from "@emotion/styled";
-
+import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
-const { useBreakpoint } = Grid;
 
 const TrackListContainer = styled.div`
   margin-top: 24px;
 `;
 
-const SelectionHeader = styled.div<{ isMobile: boolean }>`
+const SelectionHeader = styled.div`
   display: flex;
-  flex-direction: ${({ isMobile }) => isMobile ? "column" : "row"};
-  justify-content: ${({ isMobile }) => isMobile ? "center" : "space-between"};
+  flex-direction: row;
+  justify-content: space-between;
   margin-bottom: 16px;
+  
+  ${mediaQueries.mobile} {
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
 `;
 
 const TrackItem = styled(List.Item)`
@@ -40,87 +45,122 @@ interface SelectableTrackListProps {
   onSelectionChange: (selectedTracks: Track[]) => void;
 }
 
-export default function SelectableTrackList({ 
-  tracks, 
-  loading, 
+export default function SelectableTrackList({
+  tracks,
+  loading,
   selectedTracks,
-  onSelectionChange 
+  onSelectionChange,
 }: SelectableTrackListProps) {
   const { token } = useToken();
-  const screens = useBreakpoint();
-  const isMobile = !!screens.xs;
-  const isTrackSelected = (track: Track) => {
-    return selectedTracks.some(selected => 
-      selected.name === track.name && 
-      selected.artists[0]?.name === track.artists[0]?.name
+  const { isMobile } = useResponsive();
+
+  const isTrackSelected = (track: Track): boolean => {
+    return selectedTracks.some(
+      (selectedTrack) =>
+        selectedTrack.name === track.name &&
+        JSON.stringify(selectedTrack.artists) === JSON.stringify(track.artists)
     );
   };
 
   const handleTrackToggle = (track: Track) => {
     if (isTrackSelected(track)) {
-      // Remove track from selection
-      onSelectionChange(selectedTracks.filter(selected => 
-        !(selected.name === track.name && selected.artists[0]?.name === track.artists[0]?.name)
-      ));
+      onSelectionChange(
+        selectedTracks.filter(
+          (selectedTrack) =>
+            !(
+              selectedTrack.name === track.name &&
+              JSON.stringify(selectedTrack.artists) ===
+                JSON.stringify(track.artists)
+            )
+        )
+      );
     } else {
-      // Add track to selection
       onSelectionChange([...selectedTracks, track]);
     }
-  };
-
-  const handleSelectAll = () => {
-    onSelectionChange(tracks);
-  };
-
-  const handleSelectNone = () => {
-    onSelectionChange([]);
   };
 
   const handleSelectTop10 = () => {
     onSelectionChange(tracks.slice(0, 10));
   };
 
+  const handleSelectAll = () => {
+    onSelectionChange(tracks);
+  };
+
+  const handleClearAll = () => {
+    onSelectionChange([]);
+  };
+
   return (
     <TrackListContainer>
-      <SelectionHeader isMobile={isMobile}>
-        <Title level={4} style={{ color: token.colorTextBase, margin: 0 }}>
-          Select Tracks for Cover Generation ({selectedTracks.length} selected)
-        </Title>
-        <Space>
-          <Button size="small" onClick={handleSelectTop10}>
+      <SelectionHeader>
+        <div>
+          <Title level={4} style={{ margin: 0, color: token.colorText }}>
+            {selectedTracks.length} of {tracks.length} selected
+          </Title>
+          <Text type="secondary">
+            Choose tracks that best represent your playlist&apos;s mood
+          </Text>
+        </div>
+        <Space 
+          direction={isMobile ? "vertical" : "horizontal"}
+          size={isMobile ? 8 : 12}
+          style={{ width: isMobile ? '100%' : 'auto' }}
+        >
+          <Button 
+            size={isMobile ? "small" : "middle"} 
+            onClick={handleSelectTop10}
+            style={{ width: isMobile ? '100%' : 'auto' }}
+          >
             Top 10
           </Button>
-          <Button size="small" onClick={handleSelectAll}>
+          <Button 
+            size={isMobile ? "small" : "middle"} 
+            onClick={handleSelectAll}
+            style={{ width: isMobile ? '100%' : 'auto' }}
+          >
             Select All
           </Button>
-          <Button size="small" onClick={handleSelectNone}>
-            Clear All
+          <Button 
+            size={isMobile ? "small" : "middle"} 
+            onClick={handleClearAll}
+            style={{ width: isMobile ? '100%' : 'auto' }}
+          >
+            Clear
           </Button>
         </Space>
       </SelectionHeader>
-      
+
       <List
         loading={loading}
         dataSource={tracks}
-        renderItem={(track, index) => (
-          <TrackItem>
-            <Checkbox
-              checked={isTrackSelected(track)}
-              onChange={() => handleTrackToggle(track)}
-            >
-              <Space direction="vertical" size={2} style={{ marginLeft: 8 }}>
-                <Text style={{ color: token.colorTextBase, fontWeight: 500 }}>
-                  {index + 1}. {track.name}
-                </Text>
-                <Text type="secondary" style={{ fontSize: '0.9em' }}>
-                  {track.artists.map((artist) => artist.name).join(", ")}
-                </Text>
-              </Space>
-            </Checkbox>
-          </TrackItem>
-        )}
+        renderItem={(track) => {
+          const isSelected = isTrackSelected(track);
+          const artistNames = track.artists.map((artist) => artist.name).join(", ");
+
+          return (
+            <TrackItem>
+              <Checkbox
+                checked={isSelected}
+                onChange={() => handleTrackToggle(track)}
+                style={{ marginRight: 12 }}
+              />
+              <List.Item.Meta
+                title={
+                  <Text strong style={{ color: token.colorText }}>
+                    {track.name}
+                  </Text>
+                }
+                description={
+                  <Text type="secondary" style={{ fontSize: '14px' }}>
+                    {artistNames}
+                  </Text>
+                }
+              />
+            </TrackItem>
+          );
+        }}
       />
-      
     </TrackListContainer>
   );
 } 

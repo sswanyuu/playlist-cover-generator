@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Typography, Badge, theme } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
+import { mediaQueries } from "../hooks/useResponsive";
 
 const { Title, Paragraph } = Typography;
 const { useToken } = theme;
@@ -13,6 +13,9 @@ const StyledCard = styled(Card)`
   
   .ant-card-body {
     padding: 32px;
+    ${mediaQueries.xs} {
+      padding: 16px;
+    }
   }
   
   &:hover {
@@ -27,6 +30,11 @@ const StepHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
+  ${mediaQueries.xs} {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 `;
 
 const StepTitle = styled.div`
@@ -52,6 +60,12 @@ const StepIcon = styled.div<{ active?: boolean; completed?: boolean }>`
     active || completed ? '#fff' : 'rgba(255, 255, 255, 0.6)'
   };
   transition: all 0.3s ease;
+  ${mediaQueries.xs} {
+    min-width: 32px;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
 `;
 
 interface StepCardProps {
@@ -84,7 +98,7 @@ export default function StepCard({
       <StepHeader>
         <StepTitle>
           <StepIcon active={active} completed={completed}>
-            {completed ? <CheckCircleOutlined /> : icon}
+            {icon}
           </StepIcon>
           <div>
             <Title level={4} style={{ color: token.colorTextBase, margin: 0 }}>

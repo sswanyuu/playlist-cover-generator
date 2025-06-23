@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Image, Typography, App, theme, Grid } from "antd";
+import { Button, Image, Typography, App, theme } from "antd";
 import type { ImageProps } from "antd";
 import styled from "@emotion/styled";
 import {
@@ -11,7 +11,8 @@ import {
 } from "@ant-design/icons";
 import { purpleButtonColors } from "@/app/theme";
 import { keyframes } from "@emotion/react";
-
+import { useResponsiveValue } from "@/app/utils/responsive";
+import { mediaQueries } from "@/app/hooks/useResponsive";
 
 //add responsive design for mobile
 const PreviewSection = styled.div`
@@ -24,7 +25,8 @@ const PreviewSection = styled.div`
   background-color: ${({ theme }) => theme.token.colorBgContainer};
   border-radius: ${({ theme }) => theme.token.borderRadius}px;
   position: relative;
-  @media (max-width: 576px) {
+  
+  ${mediaQueries.mobile} {
     flex-direction: column;
     gap: 16px;
   }
@@ -72,7 +74,14 @@ const PreviewBox = styled.div`
   color: ${({ theme }) => theme.token.colorTextSecondary};
   position: relative;
   overflow: hidden;
-  @media (max-width: 768px) {
+  
+  ${mediaQueries.mobile} {
+    width: 250px;
+    max-width: 250px;
+  }
+  
+  ${mediaQueries.xs} {
+    width: 200px;
     max-width: 200px;
   }
 `;
@@ -127,14 +136,18 @@ export default function CoverGenerator({
   onCoverUpdate,
 }: CoverGeneratorProps) {
   const { Paragraph } = Typography;
-  const { useBreakpoint } = Grid;
   const { useToken } = theme;
   const { token } = useToken();
   const { message } = App.useApp();
+  const responsive = useResponsiveValue();
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Responsive button sizes
+  const buttonSize = responsive.isMobile ? "small" : "large";
+  
   const fetchImageAsBase64 = async (url: string): Promise<string> => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -241,8 +254,6 @@ export default function CoverGenerator({
       setUpdating(false);
     }
   };
-  const screen = useBreakpoint();
-  const isMobile = screen.xs;
   return (
     <>
       <Paragraph strong italic>
@@ -272,7 +283,7 @@ export default function CoverGenerator({
         <ButtonContainer>
           <GenerateButton
             type="primary"
-            size={isMobile ? "small" : "large"}
+            size={buttonSize}
             onClick={handleGenerateImage}
             loading={generating}
             disabled={!tracks || tracks.length === 0}
@@ -282,12 +293,12 @@ export default function CoverGenerator({
           </GenerateButton>
           <SetCoverButton
             type="primary"
-            size={isMobile ? "small" : "large"}
+            size={buttonSize}
             disabled={!generatedImage}
             onClick={handleUpdateCover}
             loading={updating}
           >
-            {screen.xs ? <ArrowUpOutlined /> : <ArrowLeftOutlined />}
+            {responsive.isMobile ? <ArrowUpOutlined /> : <ArrowLeftOutlined />}
             Set as Cover
           </SetCoverButton>
         </ButtonContainer>

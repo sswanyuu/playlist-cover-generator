@@ -1,11 +1,13 @@
 "use client";
+import React from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useCredits } from "@/lib/hooks/useCredits";
-import { Badge, Button, Spin, Typography, Grid, theme } from "antd";
+import { Badge, Button, Spin, Typography, theme } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useRouter, usePathname } from "next/navigation";
+import { useResponsive } from "@/app/hooks/useResponsive";
 
 const HeaderContainer = styled.header`
   position: fixed;
@@ -66,9 +68,7 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { data: isLoggedIn } = useSession();
-  const { useBreakpoint } = Grid;
-  const screens = useBreakpoint();
-  const isMobile = screens.xs;
+  const { isMobile } = useResponsive();
   const { Text } = Typography;
   const handleSignOut = () => {
     signOut({ callbackUrl: "/" });
