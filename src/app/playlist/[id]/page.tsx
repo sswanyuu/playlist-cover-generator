@@ -10,6 +10,7 @@ import CoverGenerator from "@/app/components/CoverGenerator";
 import StyleSelector from "@/app/components/StyleSelector";
 import StepCard from "@/app/components/StepCard";
 import StepsProgress from "@/app/components/StepsProgress";
+import FloatingStepNav from "@/app/components/FloatingStepNav";
 
 const { Title, Paragraph } = Typography;
 const { useBreakpoint } = Grid;
@@ -167,52 +168,85 @@ export default function PlaylistPage() {
         />
 
                 {/* Step 1: Track Selection */}
-        <StepCard
-          title="Select Your Tracks"
-          description="Choose the songs that define your playlist's mood"
-          icon={<SoundOutlined />}
-          active={!isStep1Complete}
-          completed={isStep1Complete}
-          showProgress={true}
-          progressCount={selectedTracks.length}
-          progressLabel="Selected"
-        >
-          <SelectableTrackList 
-            tracks={allTracks}
-            loading={loading}
-            selectedTracks={selectedTracks}
-            onSelectionChange={handleTrackSelectionChange}
-          />
-        </StepCard>
+        <div id="step-tracks">
+          <StepCard
+            title="Select Your Tracks"
+            description="Choose the songs that define your playlist's mood"
+            icon={<SoundOutlined />}
+            active={!isStep1Complete}
+            completed={isStep1Complete}
+            showProgress={true}
+            progressCount={selectedTracks.length}
+            progressLabel="Selected"
+          >
+            <SelectableTrackList 
+              tracks={allTracks}
+              loading={loading}
+              selectedTracks={selectedTracks}
+              onSelectionChange={handleTrackSelectionChange}
+            />
+          </StepCard>
+        </div>
 
         {/* Step 2: Style Selection */}
-        <StepCard
-          title="Choose Your Style"
-          description="Select an AI art style that matches your playlist's vibe"
-          icon={<BgColorsOutlined />}
-          active={isStep1Complete && !isStep2Complete}
-          completed={isStep2Complete}
-        >
-          <StyleSelector 
-            selectedStyleId={selectedStyleId}
-            onStyleChange={setSelectedStyleId}
-          />
-        </StepCard>
+        <div id="step-style">
+          <StepCard
+            title="Choose Your Style"
+            description="Select an AI art style that matches your playlist's vibe"
+            icon={<BgColorsOutlined />}
+            active={isStep1Complete && !isStep2Complete}
+            completed={isStep2Complete}
+          >
+            <StyleSelector 
+              selectedStyleId={selectedStyleId}
+              onStyleChange={setSelectedStyleId}
+            />
+          </StepCard>
+        </div>
         
         {/* Step 3: Cover Generation */}
-        <StepCard
-          title="Generate Your Cover"
-          description="Create and apply your AI-generated playlist cover"
-          icon={<ThunderboltOutlined />}
-          active={isStep3Ready}
-        >
-          <CoverGenerator
-            playlist={playlist}
-            tracks={selectedTracks}
-            selectedStyleId={selectedStyleId}
-            onCoverUpdate={handleCoverUpdate}
-          />
-        </StepCard>
+        <div id="step-generate">
+          <StepCard
+            title="Generate Your Cover"
+            description="Create and apply your AI-generated playlist cover"
+            icon={<ThunderboltOutlined />}
+            active={isStep3Ready}
+          >
+            <CoverGenerator
+              playlist={playlist}
+              tracks={selectedTracks}
+              selectedStyleId={selectedStyleId}
+              onCoverUpdate={handleCoverUpdate}
+            />
+          </StepCard>
+        </div>
+
+        {/* Floating Step Navigation */}
+        <FloatingStepNav
+          steps={[
+            {
+              anchor: "step-tracks",
+              title: "Select Your Tracks",
+              icon: <SoundOutlined />,
+              completed: isStep1Complete,
+              active: !isStep1Complete,
+            },
+            {
+              anchor: "step-style",
+              title: "Choose Your Style",
+              icon: <BgColorsOutlined />,
+              completed: isStep2Complete,
+              active: isStep1Complete && !isStep2Complete,
+            },
+            {
+              anchor: "step-generate",
+              title: "Generate Your Cover",
+              icon: <ThunderboltOutlined />,
+              completed: false,
+              active: isStep3Ready,
+            },
+          ]}
+        />
       </ContentWrapper>
     </PageContainer>
   );
