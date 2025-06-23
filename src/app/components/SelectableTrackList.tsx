@@ -1,9 +1,12 @@
 import { List, Typography, Checkbox, theme, Button, Space } from "antd";
 import styled from "@emotion/styled";
+import { useState } from "react";
+import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { useToken } = theme;
+
 const TrackListContainer = styled.div`
   margin-top: 24px;
 `;
@@ -14,7 +17,7 @@ const SelectionHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 16px;
   
-  ${mediaQueries.md} {
+  ${mediaQueries.mobile} {
     flex-direction: column;
     justify-content: center;
     gap: 16px;
@@ -29,6 +32,32 @@ const TrackItem = styled(List.Item)`
   
   &:hover {
     background-color: rgba(255, 255, 255, 0.02);
+  }
+`;
+
+const ReadMoreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const ReadMoreButton = styled(Button)`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  &:focus {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
   }
 `;
 
@@ -52,6 +81,11 @@ export default function SelectableTrackList({
 }: SelectableTrackListProps) {
   const { token } = useToken();
   const { isMobile } = useResponsive();
+  const [showAll, setShowAll] = useState(false);
+
+  const INITIAL_DISPLAY_COUNT = 5;
+  const displayedTracks = showAll ? tracks : tracks.slice(0, INITIAL_DISPLAY_COUNT);
+  const hasMoreTracks = tracks.length > INITIAL_DISPLAY_COUNT;
 
   const isTrackSelected = (track: Track): boolean => {
     return selectedTracks.some(
@@ -90,10 +124,23 @@ export default function SelectableTrackList({
     onSelectionChange([]);
   };
 
+  const toggleShowAll = () => {
+    setShowAll(!showAll);
+  };
+
   return (
     <TrackListContainer>
       <SelectionHeader>
+        <div>
+          <Title level={4} style={{ margin: 0, color: token.colorText }}>
+            {selectedTracks.length} of {tracks.length} selected
+          </Title>
+          <Text type="secondary">
+            Choose tracks that best represent your playlist&apos;s mood
+          </Text>
+        </div>
         <Space 
+          direction={isMobile ? "vertical" : "horizontal"}
           size={isMobile ? 8 : 12}
           style={{ width: isMobile ? '100%' : 'auto' }}
         >
@@ -123,7 +170,7 @@ export default function SelectableTrackList({
 
       <List
         loading={loading}
-        dataSource={tracks}
+        dataSource={displayedTracks}
         renderItem={(track) => {
           const isSelected = isTrackSelected(track);
           const artistNames = track.artists.map((artist) => artist.name).join(", ");
@@ -151,6 +198,21 @@ export default function SelectableTrackList({
           );
         }}
       />
+
+      {hasMoreTracks && (
+        <ReadMoreContainer>
+          <ReadMoreButton
+            type="text"
+            onClick={toggleShowAll}
+            icon={showAll ? <UpOutlined /> : <DownOutlined />}
+          >
+            {showAll 
+              ? `Show Less (${INITIAL_DISPLAY_COUNT} tracks)` 
+              : `Show More (${tracks.length - INITIAL_DISPLAY_COUNT} more tracks)`
+            }
+          </ReadMoreButton>
+        </ReadMoreContainer>
+      )}
     </TrackListContainer>
   );
 } 

@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
-import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import SelectableTrackList from "@/app/components/SelectableTrackList";
 import CoverGenerator from "@/app/components/CoverGenerator";
 import StyleSelector from "@/app/components/StyleSelector";
 import StepCard from "@/app/components/StepCard";
 import FloatingStepNav from "@/app/components/FloatingStepNav";
 import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
-import StepsProgress from "@/app/components/StepsProgress";
 const { Title, Paragraph } = Typography;
 
 const PageContainer = styled.div`
