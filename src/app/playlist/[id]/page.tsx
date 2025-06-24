@@ -89,6 +89,7 @@ export default function PlaylistPage() {
   const [selectedStyleId, setSelectedStyleId] = useState("dynamic");
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [loading, setLoading] = useState(true);
+  const [canUpdateCover, setCanUpdateCover] = useState(true);
   
   const { isMobile } = useResponsive();
 
@@ -115,6 +116,20 @@ export default function PlaylistPage() {
           ...playlistData,
           id: id as string
         });
+
+        // Check if user can update this playlist cover
+        try {
+          const userResponse = await fetch('/api/auth/session');
+          const sessionData = await userResponse.json();
+          
+          if (sessionData?.user?.id && playlistData?.owner?.id) {
+            setCanUpdateCover(sessionData.user.id === playlistData.owner.id);
+          }
+        } catch (error) {
+          console.error("Error checking playlist ownership:", error);
+          // Default to allowing update attempt (let API handle the error)
+          setCanUpdateCover(true);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -175,6 +190,7 @@ export default function PlaylistPage() {
               tracks={selectedTracks}
               selectedStyleId={selectedStyleId}
               onCoverUpdate={handleCoverUpdate}
+              canUpdateCover={canUpdateCover}
             />
           </CoverSection>
         </div>

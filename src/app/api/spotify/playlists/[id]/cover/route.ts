@@ -14,6 +14,20 @@ export async function PUT(
   try {
     const { imageBase64 } = await request.json();
     const { id } = await context.params;
+
+    // Check image size (Spotify has a 256KB limit)
+    const imageSizeBytes = (imageBase64.length * 3) / 4;
+    const imageSizeKB = Math.round(imageSizeBytes / 1024);
+
+    if (imageSizeBytes > 256 * 1024) {
+      return NextResponse.json(
+        {
+          error: `Image too large: ${imageSizeKB}KB. Spotify requires images under 256KB.`,
+        },
+        { status: 400 }
+      );
+    }
+
     const response = await fetch(
       `https://api.spotify.com/v1/playlists/${id}/images`,
       {
