@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         prompt: `
-          Create a vibrant, aesthetic, and contemporary playlist cover image suitable for streaming platforms like Spotify or Apple Music. 
+          Create a cover image suitable for Spotify. 
           Reflect the genres, moods, and overall feelings suggested by the 
           playlist name: ${playlistName} and these tracks: ${trackNames}. 
           ⚠️ Do **not** include any text, writing, characters, numbers, words, letters, logos, or symbols in any language — **no visible text or typography of any kind**.

@@ -10,18 +10,41 @@ export async function GET() {
   }
 
   try {
-    const response = await fetch("https://api.spotify.com/v1/me/playlists", {
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-    });
+    // Fetch both playlists and current user info in parallel
+    const [playlistsResponse, userResponse] = await Promise.all([
+      fetch("https://api.spotify.com/v1/me/playlists", {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      }),
+      fetch("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      }),
+    ]);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch playlists");
+    if (!playlistsResponse.ok || !userResponse.ok) {
+      throw new Error("Failed to fetch data");
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    const playlistsData = await playlistsResponse.json();
+    const userData = await userResponse.json();
+
+    // Add ownership and updatable status to each playlist
+    const enrichedPlaylists = playlistsData.items.map(
+      (playlist: { owner: { id: string } }) => ({
+        ...playlist,
+        isOwned: playlist.owner.id === userData.id,
+        canUpdateCover: playlist.owner.id === userData.id,
+      })
+    );
+
+    return NextResponse.json({
+      ...playlistsData,
+      items: enrichedPlaylists,
+      currentUser: userData,
+    });
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return NextResponse.json(

@@ -9,4 +9,10 @@ export interface Playlist {
   tracks: {
     total: number;
   };
+  owner: {
+    id: string;
+    display_name: string;
+  };
+  canUpdateCover?: boolean;
+  isOwned?: boolean;
 }
