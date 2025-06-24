@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { List, Image, Typography, theme, Tag, Space, Select, Tooltip } from "antd";
+import { List, Image, Typography, theme, Space, Select, Tooltip } from "antd";
 import { Playlist } from "@/types/spotify";
 import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
@@ -25,11 +25,11 @@ const PlaylistContainer = styled.div`
 `;
 
 const HeaderSection = styled.div`
-  width: 100%;
+  width: 60%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin: 24px;
   flex-wrap: wrap;
   gap: 16px;
 `;
@@ -74,12 +74,14 @@ const PlaylistHeader = styled.div`
   margin-bottom: 4px;
 `;
 
-const OwnershipBadge = styled(Tag)<{ $isOwned: boolean }>`
+const OwnershipBadge = styled.span<{ $isOwned: boolean }>`
   margin: 0;
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 12px;
   border: none;
+  display: inline-flex;
+  align-items: center;
   background: ${({ $isOwned }) => 
     $isOwned ? 'rgba(82, 196, 26, 0.15)' : 'rgba(255, 255, 255, 0.1)'};
   color: ${({ $isOwned }) => 
@@ -90,7 +92,7 @@ const StatsSection = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-top: 16px;
+  margin: 16px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;

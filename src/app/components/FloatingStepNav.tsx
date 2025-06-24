@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { ArrowUpOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
 import { mediaQueries } from "@/app/hooks/useResponsive";
@@ -41,21 +41,22 @@ const FloatingNav = styled.div<{ expanded: boolean }>`
   }
 `;
 
-const BackToTopButton = styled(Button)<{ 
-  buttonSize: number; 
-  fontSize: string; 
+const BackToTopButton = styled.button<{ 
+  $buttonSize: number;
+  $fontSize: string;
 }>`
-  width: ${({ buttonSize }) => buttonSize}px;
-  height: ${({ buttonSize }) => buttonSize}px;
-  border-radius: ${({ buttonSize }) => buttonSize / 2}px;
+  width: ${({ $buttonSize }) => $buttonSize}px;
+  height: ${({ $buttonSize }) => $buttonSize}px;
+  border-radius: ${({ $buttonSize }) => $buttonSize / 2}px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${({ fontSize }) => fontSize};
+  font-size: ${({ $fontSize }) => $fontSize};
   background: linear-gradient(135deg, #667eea, #764ba2);
   border: none;
   color: #fff;
   box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  cursor: pointer;
   
   &:hover {
     transform: scale(1.05);
@@ -93,16 +94,16 @@ const StepsContainer = styled.div<{ expanded: boolean; gap: number }>`
 const NavButton = styled.a<{ 
   active?: boolean; 
   completed?: boolean; 
-  buttonSize: number;
-  fontSize: string;
+  $buttonSize: number;
+  $fontSize: string;
 }>`
-  width: ${({ buttonSize }) => buttonSize}px;
-  height: ${({ buttonSize }) => buttonSize}px;
-  border-radius: ${({ buttonSize }) => buttonSize / 2}px;
+  width: ${({ $buttonSize }) => $buttonSize}px;
+  height: ${({ $buttonSize }) => $buttonSize}px;
+  border-radius: ${({ $buttonSize }) => $buttonSize / 2}px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${({ fontSize }) => fontSize};
+  font-size: ${({ $fontSize }) => $fontSize};
   text-decoration: none;
   border: 2px solid;
   cursor: pointer;
@@ -205,11 +206,12 @@ export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
         }}
       >
         <BackToTopButton
-          buttonSize={buttonSize}
-          fontSize={fontSize}
+          $buttonSize={buttonSize}
+          $fontSize={fontSize}
           onClick={responsive.isMobile ? toggleExpanded : handleBackToTop}
-          icon={<ArrowUpOutlined />}
-        />
+        >
+          <ArrowUpOutlined />
+        </BackToTopButton>
       </Tooltip>
       
       <StepsContainer expanded={expanded} gap={gap}>
@@ -230,8 +232,8 @@ export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
               href={`#${step.anchor}`}
               active={step.active}
               completed={step.completed}
-              buttonSize={stepButtonSize}
-              fontSize={stepFontSize}
+              $buttonSize={stepButtonSize}
+              $fontSize={stepFontSize}
               onClick={() => {
                 if (responsive.isMobile) {
                   setExpanded(false);
