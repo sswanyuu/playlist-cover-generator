@@ -84,6 +84,7 @@ export default function SelectableTrackList({
   const [showAll, setShowAll] = useState(false);
 
   const INITIAL_DISPLAY_COUNT = 5;
+  const MAX_SELECTION_COUNT = 10;
   const displayedTracks = showAll ? tracks : tracks.slice(0, INITIAL_DISPLAY_COUNT);
   const hasMoreTracks = tracks.length > INITIAL_DISPLAY_COUNT;
 
@@ -108,7 +109,9 @@ export default function SelectableTrackList({
         )
       );
     } else {
-      onSelectionChange([...selectedTracks, track]);
+      if (selectedTracks.length < MAX_SELECTION_COUNT) {
+        onSelectionChange([...selectedTracks, track]);
+      }
     }
   };
 
@@ -116,9 +119,6 @@ export default function SelectableTrackList({
     onSelectionChange(tracks.slice(0, 10));
   };
 
-  const handleSelectAll = () => {
-    onSelectionChange(tracks);
-  };
 
   const handleClearAll = () => {
     onSelectionChange([]);
@@ -133,11 +133,16 @@ export default function SelectableTrackList({
       <SelectionHeader>
         <div>
           <Title level={4} style={{ margin: 0, color: token.colorText }}>
-            {selectedTracks.length} of {tracks.length} selected
+            {selectedTracks.length} of {MAX_SELECTION_COUNT} selected
           </Title>
           <Text type="secondary">
-            Choose tracks that best represent your playlist&apos;s mood
+            Choose up to {MAX_SELECTION_COUNT} tracks that best represent your playlist&apos;s mood
           </Text>
+          {selectedTracks.length >= MAX_SELECTION_COUNT && (
+            <Text style={{ color: '#faad14', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+              ⚠️ Maximum {MAX_SELECTION_COUNT} tracks reached for optimal AI generation
+            </Text>
+          )}
         </div>
         <Space 
           direction={isMobile ? "vertical" : "horizontal"}
@@ -151,13 +156,7 @@ export default function SelectableTrackList({
           >
             Top 10
           </Button>
-          <Button 
-            size={isMobile ? "small" : "middle"} 
-            onClick={handleSelectAll}
-            style={{ width: isMobile ? '100%' : 'auto' }}
-          >
-            Select All
-          </Button>
+         
           <Button 
             size={isMobile ? "small" : "middle"} 
             onClick={handleClearAll}
@@ -174,22 +173,36 @@ export default function SelectableTrackList({
         renderItem={(track) => {
           const isSelected = isTrackSelected(track);
           const artistNames = track.artists.map((artist) => artist.name).join(", ");
+          const isAtMaxLimit = selectedTracks.length >= MAX_SELECTION_COUNT;
+          const isDisabled = !isSelected && isAtMaxLimit;
 
           return (
             <TrackItem>
               <Checkbox
                 checked={isSelected}
+                disabled={isDisabled}
                 onChange={() => handleTrackToggle(track)}
                 style={{ marginRight: 12 }}
               />
               <List.Item.Meta
                 title={
-                  <Text strong style={{ color: token.colorText }}>
+                  <Text 
+                    strong 
+                    style={{ 
+                      color: isDisabled ? 'rgba(255, 255, 255, 0.3)' : token.colorText 
+                    }}
+                  >
                     {track.name}
                   </Text>
                 }
                 description={
-                  <Text type="secondary" style={{ fontSize: '14px' }}>
+                  <Text 
+                    type="secondary" 
+                    style={{ 
+                      fontSize: '14px',
+                      opacity: isDisabled ? 0.5 : 1
+                    }}
+                  >
                     {artistNames}
                   </Text>
                 }

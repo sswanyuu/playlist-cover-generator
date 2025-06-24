@@ -494,7 +494,7 @@ export default function CoverGenerator({
           )}
           
           {/* Track Count Indicator */}
-          {tracks && tracks.length > 0 && (
+    
             <TrackIndicator>
               <Space align="center" size={12}>
                 <SoundOutlined style={{ fontSize: '20px', color: 'rgba(82, 196, 26, 0.8)' }} />
@@ -505,15 +505,15 @@ export default function CoverGenerator({
                   <StyleDescription>
                     {tracks.length < 5 
                       ? "Consider adding more tracks for better AI understanding"
-                      : tracks.length > 15 
-                      ? "Great selection! AI will use these to understand your music taste"
-                      : "Perfect amount of tracks for AI generation"
+                      : tracks.length === 10 
+                      ? "Perfect! Maximum tracks selected for optimal AI generation"
+                      : "Great selection for AI generation"
                     }
                   </StyleDescription>
                 </StyleInfo>
               </Space>
             </TrackIndicator>
-          )}
+          
         </IndicatorsContainer>
       )}
 
