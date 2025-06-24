@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
       });
 
       if (!user || user.credits < 1) {
-        return NextResponse.json({ error: "Insufficient credits" }, { status: 402 });
+        return NextResponse.json(
+          { error: "Insufficient credits" },
+          { status: 402 }
+        );
       }
 
       await prisma.user.update({
@@ -32,15 +35,15 @@ export async function POST(request: NextRequest) {
     }
 
     const { playlistName, trackNames, styleId } = await request.json();
-    
     // Get the style configuration by styleId
     const selectedStyle = getStyleById(styleId) || getDefaultStyle();
-    
-    // if (config.leonardo.useMockData) {
-    //   console.log("Using mock data for development");
-    //   return NextResponse.json({ generationId: config.leonardo.mockGenerationId });
-    // }
-    console.log("🚀 ~ POST ~ selectedStyle:", selectedStyle)
+    // Use mock data in development
+    if (config.leonardo.useMockData) {
+      console.log("Using mock data for development");
+      return NextResponse.json({
+        generationId: config.leonardo.mockGenerationId,
+      });
+    }
     // Real Leonardo AI API call for production
     const generationResponse = await fetch(LEONARDO_API_URL, {
       method: "POST",
@@ -67,6 +70,7 @@ export async function POST(request: NextRequest) {
         expandedDomain: true,
       }),
     });
+
     if (!generationResponse.ok) {
       throw new Error("Failed to create generation");
     }
@@ -77,6 +81,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ generationId });
   } catch (error) {
     console.error("Error generating image:", error);
-    return NextResponse.json({ error: "Failed to start generation" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to start generation" },
+      { status: 500 }
+    );
   }
 }

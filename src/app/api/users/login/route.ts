@@ -3,13 +3,15 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { id } = await request.json();
+    const { id, email } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: "Id is required" }, { status: 400 });
     }
 
-    // Check if user exists
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
     let user = await prisma.user.findUnique({
       where: { id },
     });
@@ -19,6 +21,7 @@ export async function POST(request: NextRequest) {
       user = await prisma.user.create({
         data: {
           id,
+          email,
           credits: 5, // Default credit value
         },
       });

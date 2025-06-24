@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
         url: "https://accounts.spotify.com/authorize",
         params: {
           scope:
-            "playlist-read-private playlist-read-collaborative ugc-image-upload playlist-modify-public playlist-modify-private",
+            "user-read-email playlist-read-private playlist-read-collaborative ugc-image-upload playlist-modify-public playlist-modify-private",
         },
       },
     }),
@@ -47,10 +47,13 @@ export const authOptions: NextAuthOptions = {
       // Create the user if not exists
       try {
         await prisma.user.upsert({
-          where: { id: user.id },
-          update: {},
+          where: { email: user.email || "" },
+          update: {
+            id: user.id,
+          },
           create: {
             id: user.id,
+            email: user.email || "",
             credits: 5,
           },
         });

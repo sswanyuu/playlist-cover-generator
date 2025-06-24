@@ -16,6 +16,37 @@ datasource db {
 }
 
 model User {
-  id      String   @id @default(uuid())
-  credits Int      @default(10)
+  id        String     @id @default(uuid())
+  credits   Int        @default(10)
+  email     String     @unique
+  playlists Playlist[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Playlist {
+  id             String           @id @default(uuid())
+  spotifyId      String           @unique
+  name           String
+  userId         String
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generatedImages GeneratedImage[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([spotifyId])
+}
+
+model GeneratedImage {
+  id           String   @id @default(uuid())
+  imageUrl     String
+  style        String   // Style ID (e.g., "dynamic", "cinematic")
+  playlistId   String
+  playlist     Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([playlistId])
+  @@index([createdAt])
 }
