@@ -4,9 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { config } from "@/lib/config";
 import { getStyleById, getDefaultStyle } from "@/lib/leonardo-styles";
+import { API } from "@/constants";
 
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
-const LEONARDO_API_URL = "https://cloud.leonardo.ai/api/rest/v1/generations";
+const LEONARDO_API_URL = API.LEONARDO_BASE_URL;
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);

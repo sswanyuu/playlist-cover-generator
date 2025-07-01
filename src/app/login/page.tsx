@@ -11,7 +11,7 @@ import {
   Space,
 } from "antd";
 import { SpotifyOutlined, LogoutOutlined } from "@ant-design/icons";
-import { spotifyTheme } from "../theme";
+import { spotifyTheme } from "@/styles/theme";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;

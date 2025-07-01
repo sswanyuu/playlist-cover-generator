@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { config } from "@/lib/config";
+import { API } from "@/constants";
 
 const LEONARDO_API_KEY = process.env.LEONARDO_API_KEY;
-const LEONARDO_API_URL = "https://cloud.leonardo.ai/api/rest/v1/generations";
+const LEONARDO_API_URL = API.LEONARDO_BASE_URL;
 
 export async function GET(request: NextRequest) {
   const generationId = request.nextUrl.searchParams.get("id");

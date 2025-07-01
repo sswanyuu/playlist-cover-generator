@@ -1,77 +1,19 @@
 import { List, Typography, Checkbox, theme, Button, Space } from "antd";
-import styled from "@emotion/styled";
 import { useState } from "react";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
-import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
+import { useResponsive } from "@/lib/hooks/useResponsive";
+import { Track, SelectableTrackListProps } from "./types";
+import {
+  TrackListContainer,
+  SelectionHeader,
+  TrackItem,
+  ReadMoreContainer,
+  ReadMoreButton,
+} from "./styles";
+import { LIMITS } from '@/constants';
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
-
-const TrackListContainer = styled.div`
-  margin-top: 24px;
-`;
-
-const SelectionHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  
-  ${mediaQueries.mobile} {
-    flex-direction: column;
-    justify-content: center;
-    gap: 16px;
-  }
-`;
-
-const TrackItem = styled(List.Item)`
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.02);
-  }
-`;
-
-const ReadMoreContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const ReadMoreButton = styled(Button)`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-  }
-  
-  &:focus {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-  }
-`;
-
-interface Track {
-  name: string;
-  artists: Array<{ name: string }>;
-}
-
-interface SelectableTrackListProps {
-  tracks: Track[];
-  loading: boolean;
-  selectedTracks: Track[];
-  onSelectionChange: (selectedTracks: Track[]) => void;
-}
 
 export default function SelectableTrackList({
   tracks,
@@ -83,10 +25,8 @@ export default function SelectableTrackList({
   const { isMobile } = useResponsive();
   const [showAll, setShowAll] = useState(false);
 
-  const INITIAL_DISPLAY_COUNT = 5;
-  const MAX_SELECTION_COUNT = 10;
-  const displayedTracks = showAll ? tracks : tracks.slice(0, INITIAL_DISPLAY_COUNT);
-  const hasMoreTracks = tracks.length > INITIAL_DISPLAY_COUNT;
+  const displayedTracks = showAll ? tracks : tracks.slice(0, LIMITS.INITIAL_DISPLAY_COUNT);
+  const hasMoreTracks = tracks.length > LIMITS.INITIAL_DISPLAY_COUNT;
 
   const isTrackSelected = (track: Track): boolean => {
     return selectedTracks.some(
@@ -109,7 +49,7 @@ export default function SelectableTrackList({
         )
       );
     } else {
-      if (selectedTracks.length < MAX_SELECTION_COUNT) {
+      if (selectedTracks.length < LIMITS.MAX_SELECTION_COUNT) {
         onSelectionChange([...selectedTracks, track]);
       }
     }
@@ -118,7 +58,6 @@ export default function SelectableTrackList({
   const handleSelectTop10 = () => {
     onSelectionChange(tracks.slice(0, 10));
   };
-
 
   const handleClearAll = () => {
     onSelectionChange([]);
@@ -133,14 +72,14 @@ export default function SelectableTrackList({
       <SelectionHeader>
         <div>
           <Title level={4} style={{ margin: 0, color: token.colorText }}>
-            {selectedTracks.length} of {MAX_SELECTION_COUNT} selected
+            {selectedTracks.length} of {LIMITS.MAX_SELECTION_COUNT} selected
           </Title>
           <Text type="secondary">
-            Choose up to {MAX_SELECTION_COUNT} tracks that best represent your playlist&apos;s mood
+            Choose up to {LIMITS.MAX_SELECTION_COUNT} tracks that best represent your playlist&apos;s mood
           </Text>
-          {selectedTracks.length >= MAX_SELECTION_COUNT && (
+          {selectedTracks.length >= LIMITS.MAX_SELECTION_COUNT && (
             <Text style={{ color: '#faad14', fontSize: '12px', display: 'block', marginTop: '4px' }}>
-              ⚠️ Maximum {MAX_SELECTION_COUNT} tracks reached for optimal AI generation
+              ⚠️ Maximum {LIMITS.MAX_SELECTION_COUNT} tracks reached for optimal AI generation
             </Text>
           )}
         </div>
@@ -173,7 +112,7 @@ export default function SelectableTrackList({
         renderItem={(track) => {
           const isSelected = isTrackSelected(track);
           const artistNames = track.artists.map((artist) => artist.name).join(", ");
-          const isAtMaxLimit = selectedTracks.length >= MAX_SELECTION_COUNT;
+          const isAtMaxLimit = selectedTracks.length >= LIMITS.MAX_SELECTION_COUNT;
           const isDisabled = !isSelected && isAtMaxLimit;
 
           return (
@@ -220,8 +159,8 @@ export default function SelectableTrackList({
             icon={showAll ? <UpOutlined /> : <DownOutlined />}
           >
             {showAll 
-              ? `Show Less (${INITIAL_DISPLAY_COUNT} tracks)` 
-              : `Show More (${tracks.length - INITIAL_DISPLAY_COUNT} more tracks)`
+              ? `Show Less (${LIMITS.INITIAL_DISPLAY_COUNT} tracks)` 
+              : `Show More (${tracks.length - LIMITS.INITIAL_DISPLAY_COUNT} more tracks)`
             }
           </ReadMoreButton>
         </ReadMoreContainer>

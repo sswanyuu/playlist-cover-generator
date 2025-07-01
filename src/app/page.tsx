@@ -8,8 +8,8 @@ import {
   StyledContent,
   StyledTitle,
   StyledSubtitle,
-} from "./styles";
-import PlaylistList from "./components/PlaylistList";
+} from "@/styles/styles";
+import PlaylistList from "@/components/PlaylistList";
 
 export default function HomePage() {
   const { data: session, status } = useSession();

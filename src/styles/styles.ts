@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import { Layout, Typography } from "antd";
 import { keyframes } from "@emotion/react";
-import { mediaQueries } from "@/app/hooks/useResponsive";
+import { mediaQueries } from "@/lib/hooks/useResponsive";
+import { SPACING, Z_INDEX, FONT_SIZES, ANIMATIONS, GRID } from "@/constants";
+import { EFFECTS, GRADIENTS } from "@/constants/colors";
 
 declare module "@emotion/react" {
   export interface Theme {
@@ -17,10 +19,10 @@ const { Content } = Layout;
 
 const glow = keyframes`
   from {
-    text-shadow: 0 0 20px rgba(7, 142, 54, 0.4);
+    text-shadow: ${EFFECTS.GLOW_GREEN};
   }
   to {
-    text-shadow: 0 0 40px rgba(9, 255, 95, 0.7);
+    text-shadow: ${EFFECTS.GLOW_GREEN_BRIGHT};
   }
 `;
 
@@ -37,32 +39,32 @@ export const StyledContent = styled(Content)`
   justify-content: center;
   gap: ${({ theme }) => theme.token.margin}px;
   position: relative;
-  z-index: 2;
+  z-index: ${Z_INDEX.HEADER};
 `;
 
 export const StyledTitle = styled(Typography.Title)`
   color: ${({ theme }) => theme.token.colorTextBase};
   margin: 0;
-  font-size: 64px;
+  font-size: ${FONT_SIZES.MEGA};
   font-weight: 900;
-  text-shadow: 0 0 30px rgba(29, 185, 84, 0.5);
+  text-shadow: ${EFFECTS.GLOW_GREEN_MEDIUM};
   letter-spacing: -0.02em;
-  background: linear-gradient(45deg, #1db954, #1ed760, #ffffff);
+  background: ${GRADIENTS.HERO};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${glow} 1.2s ease-in-out infinite alternate;
+  animation: ${glow} ${ANIMATIONS.GLOW_DURATION} ease-in-out infinite alternate;
   text-align: center;
-  max-width: 800px;
+  max-width: ${GRID.MAX_CONTENT_WIDTH};
   line-height: 1.2;
-  padding: 0 20px;
-  
+  padding: 0 ${SPACING.XL}px;
+
   ${mediaQueries.mobile} {
-    font-size: 48px;
-    max-width: 600px;
+    font-size: ${FONT_SIZES.HERO};
+    max-width: ${GRID.MAX_DESCRIPTION_WIDTH};
   }
-  
+
   ${mediaQueries.xs} {
-    font-size: 36px;
+    font-size: ${FONT_SIZES.XXXL};
     max-width: 90%;
   }
 `;
@@ -73,9 +75,9 @@ export const StyledSubtitle = styled(Typography.Text)`
   text-transform: uppercase;
   font-weight: 500;
   text-align: center;
-  max-width: 600px;
-  text-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
-  
+  max-width: ${GRID.MAX_DESCRIPTION_WIDTH};
+  text-shadow: ${EFFECTS.GLOW_GREEN_SOFT};
+
   ${mediaQueries.mobile} {
     font-size: ${({ theme }) => theme.token.fontSize}px;
     max-width: 90%;

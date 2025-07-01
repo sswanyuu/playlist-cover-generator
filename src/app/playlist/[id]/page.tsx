@@ -5,12 +5,13 @@ import { useParams } from "next/navigation";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { SoundOutlined, BgColorsOutlined, ThunderboltOutlined } from "@ant-design/icons";
-import SelectableTrackList from "@/app/components/SelectableTrackList";
-import CoverGenerator from "@/app/components/CoverGenerator";
-import StyleSelector from "@/app/components/StyleSelector";
-import StepCard from "@/app/components/StepCard";
-import FloatingStepNav from "@/app/components/FloatingStepNav";
-import { useResponsive, mediaQueries } from "@/app/hooks/useResponsive";
+import SelectableTrackList from "@/components/SelectableTrackList";
+import CoverGenerator from "@/components/CoverGenerator";
+import StyleSelector from "@/components/StyleSelector";
+import StepCard from "@/components/StepCard";
+import FloatingStepNav from "@/components/FloatingStepNav";
+import { useResponsive, mediaQueries } from "@/lib/hooks/useResponsive";
+import { GRID } from "@/constants";
 const { Title, Paragraph } = Typography;
 
 const PageContainer = styled.div`
@@ -19,7 +20,7 @@ const PageContainer = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  max-width: 1200px;
+  max-width: ${GRID.MAX_CONTENT_WIDTH};
   margin: 0 auto;
   padding: 40px 24px;
 `;

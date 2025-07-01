@@ -3,8 +3,7 @@
 import { ConfigProvider, App as AntdApp } from "antd";
 import { ThemeProvider as EmotionThemeProvider } from "@emotion/react";
 import { SessionProvider } from "next-auth/react";
-import { spotifyTheme } from "./theme";
-
+import { spotifyTheme } from "@/styles/theme";
 export function Providers({ children }: { children: React.ReactNode }) {
   const emotionTheme = {
     token: spotifyTheme.token, // sync AntD token to Emotion

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { List, Image, Typography, theme, Space, Select, Tooltip } from "antd";
 import { Playlist } from "@/types/spotify";
-import styled from "@emotion/styled";
 import { useRouter } from "next/navigation";
 import { 
   UserOutlined, 
@@ -12,93 +11,21 @@ import {
   EyeOutlined,
   FilterOutlined 
 } from "@ant-design/icons";
+import { FilterType } from "./types";
+import {
+  PlaylistContainer,
+  HeaderSection,
+  FilterSection,
+  PlaylistItem,
+  PlaylistInfo,
+  PlaylistHeader,
+  OwnershipBadge,
+  StatsSection,
+} from "./styles";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
 const { Option } = Select;
-
-const PlaylistContainer = styled.div`
-  width: 100%;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-`;
-
-const HeaderSection = styled.div`
-  width: 60%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-`;
-
-const FilterSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const PlaylistItem = styled.div<{ $canUpdate: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid ${({ $canUpdate }) => 
-    $canUpdate ? 'rgba(82, 196, 26, 0.3)' : 'rgba(255, 255, 255, 0.1)'};
-  background: ${({ $canUpdate }) => 
-    $canUpdate ? 'rgba(82, 196, 26, 0.05)' : 'transparent'};
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-`;
-
-const PlaylistInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
-
-const PlaylistHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-`;
-
-const OwnershipBadge = styled.span<{ $isOwned: boolean }>`
-  margin: 0;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 12px;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  background: ${({ $isOwned }) => 
-    $isOwned ? 'rgba(82, 196, 26, 0.15)' : 'rgba(255, 255, 255, 0.1)'};
-  color: ${({ $isOwned }) => 
-    $isOwned ? 'rgba(82, 196, 26, 0.9)' : 'rgba(255, 255, 255, 0.7)'};
-`;
-
-const StatsSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 16px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-`;
-
-type FilterType = 'all' | 'owned' | 'followed';
 
 export default function PlaylistList() {
   const { token } = useToken();
@@ -255,4 +182,4 @@ export default function PlaylistList() {
       />
     </PlaylistContainer>
   );
-}
+} 

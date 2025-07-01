@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Image, App, theme, Space, Card, Tooltip } from "antd";
-import type { ImageProps } from "antd";
-import styled from "@emotion/styled";
+import { Image, App, theme, Space, Tooltip } from "antd";
 import {
   LoadingOutlined,
   ArrowLeftOutlined,
@@ -13,253 +11,30 @@ import {
   HistoryOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
-import { purpleButtonColors } from "@/app/theme";
-import { keyframes } from "@emotion/react";
-import { useResponsiveValue } from "@/app/utils/responsive";
-import { mediaQueries } from "@/app/hooks/useResponsive";
+import { useResponsiveValue } from "@/utils/responsive";
 import { getStyleById } from "@/lib/leonardo-styles";
-
-//add responsive design for mobile
-const PreviewSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.token.colorBgContainer};
-  border-radius: ${({ theme }) => theme.token.borderRadius}px;
-  position: relative;
-  
-  ${mediaQueries.mobile} {
-    flex-direction: column;
-    gap: 16px;
-  }
-`;
-
-const StyleIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding: 16px;
-  background: rgba(82, 196, 26, 0.1);
-  border: 1px solid rgba(82, 196, 26, 0.3);
-  border-radius: 12px;
-  
-  ${mediaQueries.mobile} {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-  }
-`;
-
-const TrackIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding: 16px;
-  background: rgba(82, 196, 26, 0.1);
-  border: 1px solid rgba(82, 196, 26, 0.3);
-  border-radius: 12px;
-  
-  ${mediaQueries.mobile} {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
-  }
-`;
-
-const IndicatorsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-  
-  ${mediaQueries.mobile} {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-`;
-
-const HistorySection = styled.div`
-  margin-bottom: 24px;
-`;
-
-const HistoryHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
-`;
-
-const HistoryGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
-  
-  ${mediaQueries.mobile} {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 8px;
-  }
-`;
-
-const HistoryCard = styled(Card)`
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  
-  .ant-card-body {
-    padding: 8px;
-  }
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  &.active {
-    border: 2px solid #1890ff;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-  }
-`;
-
-const HistoryImageInfo = styled.div`
-  margin-top: 8px;
-  text-align: center;
-`;
-
-const StyleInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const StyleName = styled.span`
-  font-weight: 600;
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
-`;
-
-const StyleDescription = styled.span`
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  
-  ${mediaQueries.mobile} {
-    font-size: 13px;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  color: ${({ theme }) => theme.token.colorTextBase};
-  z-index: 1;
-`;
-
-const SetCoverButton = styled(Button)`
-  background-color: ${purpleButtonColors.colorPurple};
-  border: none;
-  &:hover {
-    background-color: ${purpleButtonColors.colorPurpleHover} !important;
-  }
-  &:active {
-    background-color: ${purpleButtonColors.colorPurpleActive} !important;
-    transform: scale(0.98);
-  }
-`;
-
-const GenerateButton = styled(Button)`
-  background-color: ${({ theme }) => theme.token.colorPrimary};
-  border: none;
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme.token.colorPrimaryHover} !important;
-  }
-`;
-
-const PreviewBox = styled.div`
-  width: 300px;
-  aspect-ratio: 1;
-  background-color: ${({ theme }) => theme.token.colorBgContainer};
-  border-radius: ${({ theme }) => theme.token.borderRadius}px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.token.colorTextSecondary};
-  position: relative;
-  overflow: hidden;
-  
-  ${mediaQueries.mobile} {
-    width: 250px;
-    max-width: 250px;
-  }
-  
-  ${mediaQueries.xs} {
-    width: 200px;
-    max-width: 200px;
-  }
-`;
-
-const slideAnimation = keyframes`
-  0% {
-    transform: translateX(100%);
-  }
-  50% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-`;
-
-const ImageWithAnimation = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  $isAnimating,
-  alt = "",
-  ...rest
-}: { $isAnimating: boolean } & React.ImgHTMLAttributes<HTMLImageElement> &
-  ImageProps) => <Image alt={alt} {...rest} />;
-
-const OriginalImage = styled(ImageWithAnimation)<{ $isAnimating: boolean }>`
-  animation: ${({ $isAnimating }) => ($isAnimating ? slideAnimation : "none")}
-    1s ease-in-out;
-`;
-
-const GeneratedImage = styled(ImageWithAnimation)<{ $isAnimating: boolean }>`
-  transition: transform 0.5s ease-in-out;
-  transform: ${({ $isAnimating }) =>
-    $isAnimating ? "translateX(-100%)" : "translateX(0)"};
-`;
-
-interface GeneratedImageData {
-  id: string;
-  imageUrl: string;
-  style: string;
-  createdAt: string;
-}
-
-interface CoverGeneratorProps {
-  playlist: {
-    images: Array<{ url: string }>;
-    name: string;
-    id: string;
-  };
-  tracks: Array<{
-    name: string;
-  }>;
-  selectedStyleId: string;
-  onCoverUpdate: (imageBase64: string) => Promise<void>;
-  canUpdateCover?: boolean;
-}
+import { GeneratedImageData, CoverGeneratorProps } from "./types";
+import { LIMITS } from "@/constants";
+import {
+  PreviewSection,
+  StyleIndicator,
+  TrackIndicator,
+  IndicatorsContainer,
+  HistorySection,
+  HistoryHeader,
+  HistoryGrid,
+  HistoryCard,
+  HistoryImageInfo,
+  StyleInfo,
+  StyleName,
+  StyleDescription,
+  ButtonContainer,
+  SetCoverButton,
+  GenerateButton,
+  PreviewBox,
+  OriginalImage,
+  GeneratedImage,
+} from "./styles";
 
 export default function CoverGenerator({
   playlist,
@@ -320,14 +95,14 @@ export default function CoverGenerator({
   
     const imageBitmap = await createImageBitmap(blob);
     const canvas = document.createElement('canvas');
-    const size = 300;
+    const size = LIMITS.CANVAS_SIZE;
     canvas.width = size;
     canvas.height = size;
   
     const ctx = canvas.getContext('2d');
     ctx?.drawImage(imageBitmap, 0, 0, size, size);
   
-    const base64Data = canvas.toDataURL('image/jpeg', 0.8); // Compress to reduce size
+    const base64Data = canvas.toDataURL('image/jpeg', LIMITS.IMAGE_COMPRESSION_QUALITY); // Compress to reduce size
     return base64Data.replace(/^data:image\/jpeg;base64,/, ''); // Strip prefix
   }
 
@@ -398,7 +173,7 @@ export default function CoverGenerator({
       const { generationId } = await response.json();
 
       let attempts = 0;
-      const maxAttempts = 10;
+      const maxAttempts = LIMITS.MAX_ATTEMPTS;
       let completed = false;
 
       while (!completed && attempts < maxAttempts) {
@@ -494,26 +269,24 @@ export default function CoverGenerator({
           )}
           
           {/* Track Count Indicator */}
-    
-            <TrackIndicator>
-              <Space align="center" size={12}>
-                <SoundOutlined style={{ fontSize: '20px', color: 'rgba(82, 196, 26, 0.8)' }} />
-                <StyleInfo>
-                  <StyleName>
-                    {tracks.length} Track{tracks.length === 1 ? '' : 's'} Selected
-                  </StyleName>
-                  <StyleDescription>
-                    {tracks.length < 5 
-                      ? "Consider adding more tracks for better AI understanding"
-                      : tracks.length === 10 
-                      ? "Perfect! Maximum tracks selected for optimal AI generation"
-                      : "Great selection for AI generation"
-                    }
-                  </StyleDescription>
-                </StyleInfo>
-              </Space>
-            </TrackIndicator>
-          
+          <TrackIndicator>
+            <Space align="center" size={12}>
+              <SoundOutlined style={{ fontSize: '20px', color: 'rgba(82, 196, 26, 0.8)' }} />
+              <StyleInfo>
+                <StyleName>
+                  {tracks.length} Track{tracks.length === 1 ? '' : 's'} Selected
+                </StyleName>
+                <StyleDescription>
+                  {tracks.length < 5 
+                    ? "Consider adding more tracks for better AI understanding"
+                    : tracks.length === 10 
+                    ? "Perfect! Maximum tracks selected for optimal AI generation"
+                    : "Great selection for AI generation"
+                  }
+                </StyleDescription>
+              </StyleInfo>
+            </Space>
+          </TrackIndicator>
         </IndicatorsContainer>
       )}
 
@@ -621,4 +394,4 @@ export default function CoverGenerator({
       </PreviewSection>
     </>
   );
-}
+} 

@@ -1,4 +1,4 @@
-import { useResponsive, type ResponsiveInfo } from "@/app/hooks/useResponsive";
+import { useResponsive, type ResponsiveInfo } from "@/lib/hooks/useResponsive";
 
 // Common responsive utility functions
 export const getResponsiveSize = (
@@ -44,22 +44,22 @@ export const spacing = {
 };
 
 export const typography = {
-  h1: { mobile: '24px', desktop: '32px' },
-  h2: { mobile: '20px', desktop: '24px' },
-  h3: { mobile: '18px', desktop: '20px' },
-  body: { mobile: '14px', desktop: '16px' },
-  small: { mobile: '12px', desktop: '14px' },
+  h1: { mobile: "24px", desktop: "32px" },
+  h2: { mobile: "20px", desktop: "24px" },
+  h3: { mobile: "18px", desktop: "20px" },
+  body: { mobile: "14px", desktop: "16px" },
+  small: { mobile: "12px", desktop: "14px" },
 };
 
 // Hook for getting responsive values easily
 export const useResponsiveValue = () => {
   const responsive = useResponsive();
-  
+
   return {
     ...responsive,
-    size: (sizes: { mobile: number; tablet?: number; desktop: number }) => 
+    size: (sizes: { mobile: number; tablet?: number; desktop: number }) =>
       getResponsiveSize(responsive, sizes),
-    string: (values: { mobile: string; tablet?: string; desktop: string }) => 
+    string: (values: { mobile: string; tablet?: string; desktop: string }) =>
       getResponsiveString(responsive, values),
   };
-}; 
+};
