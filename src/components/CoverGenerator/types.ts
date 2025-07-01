@@ -1,3 +1,5 @@
+import { Track } from "@/components/SelectableTrackList/types";
+
 export interface GeneratedImageData {
   id: string;
   imageUrl: string;
@@ -11,9 +13,7 @@ export interface CoverGeneratorProps {
     name: string;
     id: string;
   };
-  tracks: Array<{
-    name: string;
-  }>;
+  tracks: Track[];
   selectedStyleId: string;
   onCoverUpdate: (imageBase64: string) => Promise<void>;
   canUpdateCover?: boolean;

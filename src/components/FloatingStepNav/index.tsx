@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Tooltip } from "antd";
 import { ArrowUpOutlined } from "@ant-design/icons";
 import { useResponsiveValue, buttonSizes, spacing } from "@/utils/responsive";
+import { useScrollToTop } from "@/lib/hooks/useScrollToTop";
 import { FloatingStepNavProps } from "./types";
 import {
   FloatingNav,
@@ -13,6 +14,7 @@ import {
 export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
   const [expanded, setExpanded] = useState(false);
   const responsive = useResponsiveValue();
+  const { scrollToTop } = useScrollToTop();
 
   // Responsive values
   const buttonSize = responsive.size(buttonSizes.large);
@@ -21,13 +23,8 @@ export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
   const stepFontSize = responsive.string({ mobile: '16px', desktop: '18px' });
   const gap = responsive.size(spacing.sm);
 
-
-
   const handleBackToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    scrollToTop();
     
     // Close on mobile after clicking
     if (responsive.isMobile) {
@@ -35,18 +32,30 @@ export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
     }
   };
 
+  const handleStepClick = (anchor: string) => {
+    // Close on mobile after clicking
+    if (responsive.isMobile) {
+      setExpanded(false);
+    }
+    
+    // Navigate to the section
+    const element = document.querySelector(`#${anchor}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <FloatingNav expanded={expanded}>
+    <FloatingNav 
+      expanded={expanded}
+      onClick={() => responsive.isMobile && setExpanded(!expanded)}
+    >
       <Tooltip 
-        title="Back to top"
+        title="Back to Top" 
         placement="left"
-        styles={{
-          body: {
-            fontSize: '12px'
-          }
-        }}
+        mouseEnterDelay={0.3}
       >
-        <BackToTopButton 
+        <BackToTopButton
           onClick={handleBackToTop}
           $buttonSize={buttonSize}
           $fontSize={fontSize}
@@ -55,33 +64,30 @@ export default function FloatingStepNav({ steps }: FloatingStepNavProps) {
         </BackToTopButton>
       </Tooltip>
       
-      {steps.length > 0 && (
-        <StepsContainer expanded={expanded} gap={gap}>
-          {steps.map((step, index) => (
-            <Tooltip
-              key={index}
-              title={step.title}
-              placement="left"
-              styles={{
-                body: {
-                  fontSize: '12px'
-                }
+      <StepsContainer expanded={expanded} gap={gap}>
+        {steps.map((step) => (
+          <Tooltip 
+            key={step.anchor} 
+            title={step.title} 
+            placement="left"
+            mouseEnterDelay={0.3}
+          >
+            <NavButton
+              href={`#${step.anchor}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleStepClick(step.anchor);
               }}
+              active={step.active}
+              completed={step.completed}
+              $buttonSize={stepButtonSize}
+              $fontSize={stepFontSize}
             >
-              <NavButton
-                href={`#${step.anchor}`}
-                active={step.active}
-                completed={step.completed}
-                $buttonSize={stepButtonSize}
-                $fontSize={stepFontSize}
-                onClick={() => responsive.isMobile && setExpanded(false)}
-              >
-                {step.icon}
-              </NavButton>
-            </Tooltip>
-          ))}
-        </StepsContainer>
-      )}
+              {step.icon}
+            </NavButton>
+          </Tooltip>
+        ))}
+      </StepsContainer>
     </FloatingNav>
   );
 } 
