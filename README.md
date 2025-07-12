@@ -17,6 +17,15 @@ A modern web application that generates stunning, AI-powered cover art for your 
 - 🔒 **Privacy-First** - Only update playlists you own
 
 
+<img width="1036" height="772" alt="demo - home page with all the playlists" src="https://github.com/user-attachments/assets/2b978715-e7c7-4239-a51a-1698ca0e8193" />
+<img width="1002" height="608" alt="demo - gen section" src="https://github.com/user-attachments/assets/0af8a641-00f7-4c58-9ed9-d0ca03e08912" />
+<img width="1002" height="596" alt="demo - gen tune" src="https://github.com/user-attachments/assets/ed3a29e5-f68c-433f-86d1-b98119186dd2" />
+<img width="1037" height="650" alt="demo - gen result with history" src="https://github.com/user-attachments/assets/a3db1efb-c2e9-4400-877b-5bb10f264127" />
+
+
+
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
